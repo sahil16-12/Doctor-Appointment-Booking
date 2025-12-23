@@ -1,0 +1,407 @@
+/* Doctor Profile Styles */
+.doctor-profile-page {
+  background: var(--bg-color);
+  min-height: 100vh;
+}
+
+.profile-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid #333;
+  padding: 2rem 0;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.doctor-main-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.doctor-avatar {
+  width: 100px;
+  height: 100px;
+  background: var(--accent-color);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.doctor-details h1 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.doctor-specialty {
+  color: var(--accent-color);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.doctor-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  color: var(--text-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+.quick-book-card {
+  background: #2b2b2b;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  min-width: 280px;
+}
+
+.quick-book-card h3 {
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.description-text {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.book-now-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 0.5rem;
+}
+
+.book-now-btn:hover {
+  background: #e91e63;
+}
+
+.specialty-text {
+  color: #888;
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+}
+
+.profile-content {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.section-title {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.about-text {
+  color: #ccc;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.info-item {
+  padding: 0.75rem;
+  background: #2b2b2b;
+  border-radius: 6px;
+}
+
+.info-label {
+  color: #aaa;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.specializations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.specialization-tag {
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 77, 166, 0.1);
+  color: var(--accent-color);
+  border-radius: 15px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 77, 166, 0.2);
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.review-item {
+  padding: 1rem;
+  background: #2b2b2b;
+  border-radius: 6px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.reviewer-name {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.review-rating {
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
+.review-text {
+  color: #ccc;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.appointment-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.appointment-title {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.time-slots-date {
+  margin-bottom: 0.75rem;
+}
+
+.date-label {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.time-slots-gap {
+  margin: 0.75rem 0;
+}
+
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.time-slot {
+  padding: 0.6rem;
+  background: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.time-slot:hover,
+.time-slot.selected {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.book-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.book-btn:hover {
+  background: #e91e63;
+}
+
+.contact-info {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #444;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-icon {
+  color: var(--accent-color);
+  font-size: 1rem;
+  margin-top: 0.1rem;
+}
+
+.contact-text {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.insurance-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.insurance-title {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.insurance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 968px) {
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .doctor-main-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 1.5rem;
+  }
+  
+  .profile-content {
+    padding: 0 1rem;
+  }
+  
+  .doctor-details h1 {
+    font-size: 1.5rem;
+  }
+  
+  .doctor-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 1.5rem;
+  }
+  
+  .quick-book-card {
+    min-width: auto;
+    width: 100%;
+  }
+}

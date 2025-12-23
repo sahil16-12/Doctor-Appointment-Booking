@@ -1,0 +1,96 @@
+
+:root {
+  --bg-color: #121212;
+  --text-color: #f2f2f2;
+  --accent-color: #ff4da6;
+  --accent-color-hover: #ff66b2;
+  --card-bg: #1e1e1e;
+  --transition: 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: var(--accent-color);
+  transition: var(--transition);
+}
+
+a:hover {
+  opacity: 0.85;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: var(--transition);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 3rem;
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.nav-links a {
+  margin-left: 1.5rem;
+  font-weight: 500;
+}
+
+.signup-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid var(--accent-color);
+}
+
+footer {
+  margin-top: auto;
+  background: var(--card-bg);
+  padding: 1rem 0;
+}
+
+.footer-inner {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+}

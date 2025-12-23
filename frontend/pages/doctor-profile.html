@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dr. Sarah Johnson - Sehat</title>
+    <link rel="stylesheet" href="../css/globals.css" />
+    <link rel="stylesheet" href="../css/doctor-profile.css" />
+  </head>
+  <body class="doctor-profile-page">
+    <header data-layout="header"></header>
+
+    <main>
+      <!-- Profile Header -->
+      <section class="profile-header">
+        <div class="header-content">
+          <div class="doctor-main-info">
+            <div class="doctor-avatar">SJ</div>
+            <div class="doctor-details">
+              <h1>Dr. Sarah Johnson</h1>
+              <div class="doctor-specialty">Cardiologist</div>
+              <div class="doctor-stats">
+                <div class="stat-item">
+                  <div class="stat-value">12</div>
+                  <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">4.8</div>
+                  <div class="stat-label">Rating</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">500+</div>
+                  <div class="stat-label">Patients</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-book-card">
+            <h3>Book Appointment</h3>
+            <p class="description-text">Next Available: Today 2:00 PM</p>
+            <button
+              class="book-now-btn"
+              onclick="window.location.href='book-appointment.html'"
+            >
+              Book Now - $150
+            </button>
+            <p class="specialty-text">Video consultation available</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Content -->
+      <div class="profile-content">
+        <!-- Main Content -->
+        <div class="main-content">
+          <!-- About -->
+          <div class="section-card">
+            <h2 class="section-title">About Dr. Sarah Johnson</h2>
+            <div class="about-text">
+              Dr. Sarah Johnson is a board-certified cardiologist with over 12
+              years of experience in cardiovascular medicine. She specializes in
+              preventive cardiology, heart disease management, and cardiac
+              imaging. Dr. Johnson completed her medical degree at Harvard
+              Medical School and her cardiology fellowship at Johns Hopkins
+              Hospital.
+            </div>
+          </div>
+
+          <!-- Professional Information -->
+          <div class="section-card">
+            <h2 class="section-title">Professional Information</h2>
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Medical License</div>
+                <div class="info-value">#MD123456</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Board Certification</div>
+                <div class="info-value">Cardiology</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Medical School</div>
+                <div class="info-value">Harvard Medical School</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Languages</div>
+                <div class="info-value">English, Spanish</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Specializations -->
+          <div class="section-card">
+            <h2 class="section-title">Specializations</h2>
+            <div class="specializations">
+              <span class="specialization-tag">Heart Disease</span>
+              <span class="specialization-tag">Hypertension</span>
+              <span class="specialization-tag">Preventive Cardiology</span>
+              <span class="specialization-tag">Cardiac Imaging</span>
+              <span class="specialization-tag">Cholesterol Management</span>
+              <span class="specialization-tag">Heart Rhythm Disorders</span>
+            </div>
+          </div>
+
+          <!-- Patient Reviews -->
+          <div class="section-card">
+            <h2 class="section-title">Patient Reviews (127 reviews)</h2>
+            <div class="reviews-list">
+              <div class="review-item">
+                <div class="review-header">
+                  <div class="reviewer-name">John D.</div>
+                  <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+                <div class="review-text">
+                  Excellent doctor! Dr. Johnson took the time to explain my
+                  condition and treatment options. Very professional and caring
+                  approach.
+                </div>
+              </div>
+
+              <div class="review-item">
+                <div class="review-header">
+                  <div class="reviewer-name">Maria S.</div>
+                  <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+                <div class="review-text">
+                  Had a great experience with Dr. Johnson. She was thorough in
+                  her examination and provided clear treatment recommendations.
+                </div>
+              </div>
+
+              <div class="review-item">
+                <div class="review-header">
+                  <div class="reviewer-name">Robert K.</div>
+                  <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                </div>
+                <div class="review-text">
+                  Dr. Johnson helped me manage my heart condition effectively.
+                  Highly recommend her expertise and patient care.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Appointment Booking -->
+          <div class="appointment-card">
+            <h3 class="appointment-title">Available Time Slots</h3>
+            <div class="time-slots-date">
+              <strong class="date-label">Today, Dec 3</strong>
+            </div>
+            <div class="time-slots-grid">
+              <div class="time-slot">2:00 PM</div>
+              <div class="time-slot">3:30 PM</div>
+              <div class="time-slot">4:00 PM</div>
+              <div class="time-slot">5:30 PM</div>
+            </div>
+            <div class="time-slots-gap">
+              <strong class="date-label">Tomorrow, Dec 4</strong>
+            </div>
+            <div class="time-slots-grid">
+              <div class="time-slot">9:00 AM</div>
+              <div class="time-slot">10:30 AM</div>
+              <div class="time-slot">2:00 PM</div>
+              <div class="time-slot">3:30 PM</div>
+            </div>
+            <button
+              class="book-btn"
+              onclick="window.location.href='book-appointment.html'"
+            >
+              Book Appointment
+            </button>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="contact-info">
+            <h4 class="appointment-title">Contact Information</h4>
+
+            <div class="contact-item">
+              <div class="contact-icon">🏥</div>
+              <div class="contact-text">
+                <strong>Manhattan Medical Center</strong><br />
+                123 Health Street<br />
+                New York, NY 10001
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">📞</div>
+              <div class="contact-text">(555) 123-4567</div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">📧</div>
+              <div class="contact-text">dr.johnson@manhattanmedical.com</div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-icon">🕒</div>
+              <div class="contact-text">
+                Mon-Fri: 9:00 AM - 6:00 PM<br />
+                Sat: 9:00 AM - 2:00 PM
+              </div>
+            </div>
+          </div>
+
+          <!-- Insurance -->
+          <div class="insurance-card">
+            <h4 class="insurance-title">Insurance Accepted</h4>
+            <div class="insurance-list">
+              <div>• Blue Cross Blue Shield</div>
+              <div>• Aetna</div>
+              <div>• Cigna</div>
+              <div>• Medicare</div>
+              <div>• Medicaid</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer data-layout="footer"></footer>
+
+    <script type="module">
+      import { initLayout } from "../js/layout.js";
+      initLayout("doctor-profile");
+
+      // Time slot selection
+      const timeSlots = document.querySelectorAll(".time-slot");
+      timeSlots.forEach((slot) => {
+        slot.addEventListener("click", () => {
+          timeSlots.forEach((s) => s.classList.remove("selected"));
+          slot.classList.add("selected");
+        });
+      });
+    </script>
+  </body>
+</html>

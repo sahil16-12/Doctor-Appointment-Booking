@@ -1,0 +1,377 @@
+/* Book Appointment Styles */
+.booking-page {
+  background: var(--bg-color);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.booking-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+}
+
+.booking-form {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.form-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.form-title {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(255, 77, 166, 0.2);
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.date-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.time-slot {
+  padding: 0.75rem;
+  background: #2b2b2b;
+  border: 2px solid #444;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.time-slot:hover {
+  border-color: var(--accent-color);
+  background: rgba(255, 77, 166, 0.1);
+}
+
+.time-slot.selected {
+  border-color: var(--accent-color);
+  background: var(--accent-color);
+  color: white;
+}
+
+.time-slot.unavailable {
+  background: #333;
+  color: #666;
+  cursor: not-allowed;
+  border-color: #444;
+}
+
+.appointment-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.appointment-type {
+  padding: 1rem;
+  background: #2b2b2b;
+  border: 2px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.appointment-type:hover {
+  border-color: var(--accent-color);
+}
+
+.appointment-type.selected {
+  border-color: var(--accent-color);
+  background: rgba(255, 77, 166, 0.1);
+}
+
+.type-title {
+  color: var(--text-color);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.type-description {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.type-duration {
+  color: var(--accent-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.checkbox {
+  margin-top: 0.2rem;
+}
+
+.checkbox-label {
+  color: #ccc;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.book-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--accent-color), #e91e63);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 166, 0.3);
+}
+
+.book-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.booking-summary {
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid #333;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.summary-header {
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.summary-title {
+  color: var(--text-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.doctor-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.doctor-avatar {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--accent-color), #e91e63);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.doctor-details h3 {
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.doctor-specialty {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.doctor-rating {
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+.summary-content {
+  padding: 1.5rem 2rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #444;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.summary-label {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.summary-value {
+  color: var(--text-color);
+  font-weight: 500;
+  text-align: right;
+}
+
+.summary-total {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #444;
+  background: #2b2b2b;
+  border-radius: 0 0 10px 10px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.total-amount {
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.clinic-info {
+  background: #2b2b2b;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.clinic-name {
+  color: var(--text-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.clinic-address {
+  color: #aaa;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 968px) {
+  .booking-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-summary {
+    order: -1;
+    position: static;
+  }
+  
+  .date-time-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .appointment-type-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Sehat</title>
+
+    <link rel="stylesheet" href="../css/globals.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <header data-layout="header"></header>
+
+    <main class="auth-main center">
+      <form class="auth-box" id="signupForm">
+        <h2>Create Your Account</h2>
+        <p>Join Sehat and start booking appointments</p>
+
+        <!-- User Type Selection -->
+        <div class="user-type-selection">
+          <label class="user-type-label">
+            <input type="radio" name="userType" value="patient" checked />
+            <span class="user-type-span">Patient</span>
+          </label>
+          <label class="user-type-label">
+            <input type="radio" name="userType" value="doctor" />
+            <span class="user-type-span">Doctor</span>
+          </label>
+        </div>
+
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Email Address" required />
+        <input type="tel" placeholder="Phone Number" required />
+        <input type="date" placeholder="Date of Birth" required />
+
+        <!-- Patient specific fields -->
+        <div id="patientFields">
+          <input type="text" placeholder="Emergency Contact (Optional)" />
+          <input type="text" placeholder="Known Allergies (Optional)" />
+        </div>
+
+        <!-- Doctor specific fields -->
+        <div id="doctorFields" class="doctor-fields">
+          <select>
+            <option value="">Select Specialization</option>
+            <option value="general">General Practice</option>
+            <option value="cardiology">Cardiology</option>
+            <option value="dermatology">Dermatology</option>
+            <option value="pediatrics">Pediatrics</option>
+            <option value="orthopedics">Orthopedics</option>
+          </select>
+          <input type="text" placeholder="Medical License Number" />
+          <input type="number" placeholder="Years of Experience" min="0" />
+        </div>
+
+        <input type="password" placeholder="Password" required />
+        <input type="password" placeholder="Confirm Password" required />
+
+        <label class="terms-container">
+          <input type="checkbox" required class="terms-checkbox" />
+          <span class="terms-label"
+            >I agree to the Terms of Service and Privacy Policy</span
+          >
+        </label>
+
+        <button type="submit">Create Account</button>
+
+        <p class="switch">
+          Already have an account?
+          <a href="login.html">Login</a>
+        </p>
+      </form>
+    </main>
+
+    <footer data-layout="footer"></footer>
+
+    <script type="module">
+      import { initLayout } from "../js/layout.js";
+      initLayout("signup");
+
+      document.getElementById("signupForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert("Signup functionality coming soon!");
+      });
+
+      // Handle user type switching
+      const userTypeRadios = document.querySelectorAll(
+        'input[name="userType"]'
+      );
+      const patientFields = document.getElementById("patientFields");
+      const doctorFields = document.getElementById("doctorFields");
+
+      userTypeRadios.forEach((radio) => {
+        radio.addEventListener("change", function () {
+          if (this.value === "patient") {
+            patientFields.style.display = "block";
+            doctorFields.style.display = "none";
+          } else {
+            patientFields.style.display = "none";
+            doctorFields.style.display = "block";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

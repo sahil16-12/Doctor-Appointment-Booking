@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Sehat</title>
+
+    <link rel="stylesheet" href="../css/globals.css" />
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <header data-layout="header"></header>
+
+    <main class="auth-main center">
+      <form class="auth-box" id="loginForm">
+        <h2>Welcome Back</h2>
+        <p>Sign in to access your healthcare dashboard</p>
+
+        <!-- User Type Selection -->
+        <div class="user-type-container">
+          <label class="user-type-option">
+            <input type="radio" name="userType" value="patient" checked />
+            <span class="user-type-display">Patient</span>
+          </label>
+          <label class="user-type-option">
+            <input type="radio" name="userType" value="doctor" />
+            <span class="user-type-display">Doctor</span>
+          </label>
+        </div>
+
+        <input type="email" placeholder="Email Address" required />
+        <input type="password" placeholder="Password" required />
+
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" />
+            Remember me
+          </label>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+        </div>
+
+        <button type="submit">Sign In</button>
+
+        <p class="switch">
+          Don't have an account?
+          <a href="signup.html">Sign Up</a>
+        </p>
+      </form>
+    </main>
+
+    <footer data-layout="footer"></footer>
+
+    <script type="module">
+      import { initLayout } from "../js/layout.js";
+      initLayout("login");
+
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const userType = document.querySelector(
+          'input[name="userType"]:checked'
+        ).value;
+        alert(`Login functionality coming soon for ${userType}s!`);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Appointment - Sehat</title>
+    <link rel="stylesheet" href="../css/globals.css" />
+    <link rel="stylesheet" href="../css/book-appointment.css" />
+  </head>
+  <body class="booking-page">
+    <header data-layout="header"></header>
+
+    <main>
+      <div class="booking-container">
+        <!-- Booking Form -->
+        <div class="booking-form">
+          <div class="form-header">
+            <h1 class="form-title">Book Your Appointment</h1>
+            <p class="form-subtitle">
+              Fill in the details to schedule your consultation
+            </p>
+          </div>
+
+          <form id="bookingForm">
+            <!-- Patient Information -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <span>👤</span>
+                Patient Information
+              </h3>
+              <div class="form-group">
+                <label class="form-label" for="fullName">Full Name *</label>
+                <input type="text" id="fullName" class="form-input" required />
+              </div>
+              <div class="date-time-grid">
+                <div class="form-group">
+                  <label class="form-label" for="email">Email Address *</label>
+                  <input type="email" id="email" class="form-input" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="phone">Phone Number *</label>
+                  <input type="tel" id="phone" class="form-input" required />
+                </div>
+              </div>
+              <div class="date-time-grid">
+                <div class="form-group">
+                  <label class="form-label" for="dateOfBirth"
+                    >Date of Birth</label
+                  >
+                  <input type="date" id="dateOfBirth" class="form-input" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="gender">Gender</label>
+                  <select id="gender" class="form-select">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Appointment Type -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <span>🏥</span>
+                Appointment Type
+              </h3>
+              <div class="appointment-type-grid">
+                <div class="appointment-type" data-type="consultation">
+                  <div class="type-title">General Consultation</div>
+                  <div class="type-description">
+                    Standard consultation for health concerns and medical advice
+                  </div>
+                  <div class="type-duration">30 minutes • $150</div>
+                </div>
+                <div class="appointment-type" data-type="followup">
+                  <div class="type-title">Follow-up Visit</div>
+                  <div class="type-description">
+                    Follow-up appointment for ongoing treatment or check results
+                  </div>
+                  <div class="type-duration">20 minutes • $100</div>
+                </div>
+                <div class="appointment-type" data-type="physical">
+                  <div class="type-title">Annual Physical</div>
+                  <div class="type-description">
+                    Comprehensive health examination and preventive care
+                  </div>
+                  <div class="type-duration">60 minutes • $250</div>
+                </div>
+                <div class="appointment-type" data-type="urgent">
+                  <div class="type-title">Urgent Care</div>
+                  <div class="type-description">
+                    Same-day appointment for urgent health concerns
+                  </div>
+                  <div class="type-duration">30 minutes • $200</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date & Time Selection -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <span>📅</span>
+                Select Date & Time
+              </h3>
+              <div class="date-time-grid">
+                <div class="form-group">
+                  <label class="form-label" for="appointmentDate"
+                    >Preferred Date *</label
+                  >
+                  <input
+                    type="date"
+                    id="appointmentDate"
+                    class="form-input"
+                    required
+                    min="2024-12-03"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Consultation Mode</label>
+                  <select id="consultationMode" class="form-select">
+                    <option value="video">Video Call</option>
+                    <option value="inperson">In-person Visit</option>
+                    <option value="phone">Phone Call</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Available Time Slots</label>
+                <div class="time-slots">
+                  <div class="time-slot" data-time="09:00">9:00 AM</div>
+                  <div class="time-slot" data-time="09:30">9:30 AM</div>
+                  <div class="time-slot" data-time="10:00">10:00 AM</div>
+                  <div class="time-slot unavailable" data-time="10:30">
+                    10:30 AM
+                  </div>
+                  <div class="time-slot" data-time="11:00">11:00 AM</div>
+                  <div class="time-slot" data-time="11:30">11:30 AM</div>
+                  <div class="time-slot" data-time="14:00">2:00 PM</div>
+                  <div class="time-slot" data-time="14:30">2:30 PM</div>
+                  <div class="time-slot" data-time="15:00">3:00 PM</div>
+                  <div class="time-slot unavailable" data-time="15:30">
+                    3:30 PM
+                  </div>
+                  <div class="time-slot" data-time="16:00">4:00 PM</div>
+                  <div class="time-slot" data-time="16:30">4:30 PM</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reason for Visit -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <span>📝</span>
+                Additional Information
+              </h3>
+              <div class="form-group">
+                <label class="form-label" for="reasonForVisit"
+                  >Reason for Visit *</label
+                >
+                <textarea
+                  id="reasonForVisit"
+                  class="form-textarea"
+                  placeholder="Please describe your symptoms, concerns, or reason for this appointment..."
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="currentMedications"
+                  >Current Medications</label
+                >
+                <textarea
+                  id="currentMedications"
+                  class="form-textarea"
+                  placeholder="List any medications you're currently taking (optional)"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="allergies"
+                  >Known Allergies</label
+                >
+                <input
+                  type="text"
+                  id="allergies"
+                  class="form-input"
+                  placeholder="List any known allergies (optional)"
+                />
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="form-section">
+              <div class="checkbox-group">
+                <input type="checkbox" id="terms" class="checkbox" required />
+                <label for="terms" class="checkbox-label">
+                  I agree to the
+                  <a href="#" style="color: var(--accent-color)"
+                    >Terms & Conditions</a
+                  >
+                  and
+                  <a href="#" style="color: var(--accent-color)"
+                    >Privacy Policy</a
+                  >. I understand that this appointment is subject to the
+                  doctor's availability and confirmation.
+                </label>
+              </div>
+              <div class="checkbox-group">
+                <input type="checkbox" id="notifications" class="checkbox" />
+                <label for="notifications" class="checkbox-label">
+                  Send me appointment reminders and health tips via email and
+                  SMS
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="book-btn" disabled>
+              Book Appointment
+            </button>
+          </form>
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="booking-summary">
+          <div class="summary-header">
+            <h3 class="summary-title">Appointment Summary</h3>
+            <div class="doctor-info">
+              <div class="doctor-avatar">SJ</div>
+              <div class="doctor-details">
+                <h3>Dr. Sarah Johnson</h3>
+                <div class="doctor-specialty">Cardiologist</div>
+                <div class="doctor-rating">⭐ 4.8 (127 reviews)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-content">
+            <div class="summary-item">
+              <div class="summary-label">Appointment Type</div>
+              <div class="summary-value" id="selectedType">
+                Select appointment type
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Date & Time</div>
+              <div class="summary-value" id="selectedDateTime">
+                Select date & time
+              </div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Consultation Mode</div>
+              <div class="summary-value" id="selectedMode">Video Call</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Duration</div>
+              <div class="summary-value" id="appointmentDuration">-</div>
+            </div>
+          </div>
+
+          <div class="summary-total">
+            <div class="total-row">
+              <div class="total-label">Total Cost</div>
+              <div class="total-amount" id="totalCost">$0</div>
+            </div>
+          </div>
+
+          <div class="clinic-info">
+            <div class="clinic-name">Manhattan Medical Center</div>
+            <div class="clinic-address">
+              123 Health Street<br />
+              New York, NY 10001<br />
+              (555) 123-4567
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer data-layout="footer"></footer>
+
+    <script type="module">
+      import { initLayout } from "../js/layout.js";
+      initLayout("book-appointment");
+
+      // Booking form functionality
+      const appointmentTypes = document.querySelectorAll(".appointment-type");
+      const timeSlots = document.querySelectorAll(
+        ".time-slot:not(.unavailable)"
+      );
+      const form = document.getElementById("bookingForm");
+      const bookBtn = document.querySelector(".book-btn");
+      const terms = document.getElementById("terms");
+
+      let selectedType = null;
+      let selectedTime = null;
+
+      // Appointment type selection
+      appointmentTypes.forEach((type) => {
+        type.addEventListener("click", () => {
+          appointmentTypes.forEach((t) => t.classList.remove("selected"));
+          type.classList.add("selected");
+          selectedType = type.dataset.type;
+          updateSummary();
+          checkFormValid();
+        });
+      });
+
+      // Time slot selection
+      timeSlots.forEach((slot) => {
+        slot.addEventListener("click", () => {
+          timeSlots.forEach((s) => s.classList.remove("selected"));
+          slot.classList.add("selected");
+          selectedTime = slot.dataset.time;
+          updateSummary();
+          checkFormValid();
+        });
+      });
+
+      // Date change
+      document
+        .getElementById("appointmentDate")
+        .addEventListener("change", updateSummary);
+      document
+        .getElementById("consultationMode")
+        .addEventListener("change", updateSummary);
+
+      // Terms checkbox
+      terms.addEventListener("change", checkFormValid);
+
+      function updateSummary() {
+        const typeInfo = {
+          consultation: {
+            name: "General Consultation",
+            duration: "30 minutes",
+            price: 150,
+          },
+          followup: {
+            name: "Follow-up Visit",
+            duration: "20 minutes",
+            price: 100,
+          },
+          physical: {
+            name: "Annual Physical",
+            duration: "60 minutes",
+            price: 250,
+          },
+          urgent: { name: "Urgent Care", duration: "30 minutes", price: 200 },
+        };
+
+        if (selectedType) {
+          document.getElementById("selectedType").textContent =
+            typeInfo[selectedType].name;
+          document.getElementById("appointmentDuration").textContent =
+            typeInfo[selectedType].duration;
+          document.getElementById("totalCost").textContent =
+            "$" + typeInfo[selectedType].price;
+        }
+
+        const date = document.getElementById("appointmentDate").value;
+        if (date && selectedTime) {
+          const dateObj = new Date(date);
+          const formattedDate = dateObj.toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          const timeStr = convertTime(selectedTime);
+          document.getElementById(
+            "selectedDateTime"
+          ).textContent = `${formattedDate} at ${timeStr}`;
+        }
+
+        const mode = document.getElementById("consultationMode").value;
+        const modeText = {
+          video: "Video Call",
+          inperson: "In-person Visit",
+          phone: "Phone Call",
+        };
+        document.getElementById("selectedMode").textContent = modeText[mode];
+      }
+
+      function convertTime(time24) {
+        const [hours, minutes] = time24.split(":");
+        const hour12 = hours % 12 || 12;
+        const ampm = hours < 12 ? "AM" : "PM";
+        return `${hour12}:${minutes} ${ampm}`;
+      }
+
+      function checkFormValid() {
+        const requiredFields = form.querySelectorAll("[required]");
+        let allValid = true;
+
+        requiredFields.forEach((field) => {
+          if (!field.value.trim()) {
+            allValid = false;
+          }
+        });
+
+        if (!selectedType || !selectedTime || !terms.checked) {
+          allValid = false;
+        }
+
+        bookBtn.disabled = !allValid;
+      }
+
+      // Form submission
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert("Appointment booking functionality would be implemented here!");
+      });
+
+      // Check form validity on input
+      form.addEventListener("input", checkFormValid);
+    </script>
+  </body>
+</html>

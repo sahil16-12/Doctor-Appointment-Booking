@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Doctors - Sehat</title>
+    <link rel="stylesheet" href="../css/globals.css" />
+    <link rel="stylesheet" href="../css/find-doctors.css" />
+  </head>
+  <body class="find-doctors-page">
+    <header data-layout="header"></header>
+
+    <main>
+      <!-- Search Header -->
+      <section class="search-header">
+        <div class="search-container">
+          <form class="search-form">
+            <div class="form-group">
+              <label for="searchQuery">Search doctors or specialties</label>
+              <input
+                type="text"
+                id="searchQuery"
+                placeholder="e.g., Cardiologist, Dr. Smith"
+              />
+            </div>
+            <div class="form-group">
+              <label for="location">Location</label>
+              <input type="text" id="location" placeholder="City, State" />
+            </div>
+            <div class="form-group">
+              <label for="specialty">Specialty</label>
+              <select id="specialty">
+                <option value="">All Specialties</option>
+                <option value="cardiology">Cardiology</option>
+                <option value="dermatology">Dermatology</option>
+                <option value="pediatrics">Pediatrics</option>
+              </select>
+            </div>
+            <button type="submit" class="search-btn">Search</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Content Container -->
+      <div class="content-container">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+          <h3 class="filters-title">Filters</h3>
+
+          <div class="filter-group">
+            <div class="filter-label">Availability</div>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="checkbox" id="available-today" />
+                <label for="available-today">Available Today</label>
+              </div>
+              <div class="filter-option">
+                <input type="checkbox" id="telehealth" />
+                <label for="telehealth">Video Consultation</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-label">Gender</div>
+            <div class="filter-options">
+              <div class="filter-option">
+                <input type="radio" name="gender" id="any-gender" checked />
+                <label for="any-gender">Any</label>
+              </div>
+              <div class="filter-option">
+                <input type="radio" name="gender" id="male" />
+                <label for="male">Male</label>
+              </div>
+              <div class="filter-option">
+                <input type="radio" name="gender" id="female" />
+                <label for="female">Female</label>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Doctors List -->
+        <main class="doctors-main">
+          <div class="results-header">
+            <div class="results-count">Found 12 doctors</div>
+            <select class="sort-dropdown">
+              <option>Sort by Rating</option>
+              <option>Distance</option>
+              <option>Availability</option>
+            </select>
+          </div>
+
+          <div class="doctors-grid">
+            <!-- Doctor Card 1 -->
+            <div class="doctor-card">
+              <div class="doctor-header">
+                <div class="doctor-avatar">SJ</div>
+                <div class="doctor-info">
+                  <h3>Dr. Sarah Johnson</h3>
+                  <div class="doctor-specialty">Cardiologist</div>
+                  <div class="doctor-rating">⭐ 4.8 (127 reviews)</div>
+                </div>
+              </div>
+              <div class="doctor-details">
+                <div class="detail-row">
+                  <span class="detail-label">Experience</span>
+                  <span class="detail-value">12 years</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Next Available</span>
+                  <span class="detail-value">Today 2:00 PM</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Consultation Fee</span>
+                  <span class="detail-value">$150</span>
+                </div>
+              </div>
+              <button
+                class="book-btn"
+                onclick="window.location.href='doctor-profile.html'"
+              >
+                View Profile & Book
+              </button>
+            </div>
+
+            <!-- Doctor Card 2 -->
+            <div class="doctor-card">
+              <div class="doctor-header">
+                <div class="doctor-avatar">EP</div>
+                <div class="doctor-info">
+                  <h3>Dr. Emily Parker</h3>
+                  <div class="doctor-specialty">Pediatrician</div>
+                  <div class="doctor-rating">⭐ 4.9 (89 reviews)</div>
+                </div>
+              </div>
+              <div class="doctor-details">
+                <div class="detail-row">
+                  <span class="detail-label">Experience</span>
+                  <span class="detail-value">8 years</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Next Available</span>
+                  <span class="detail-value">Tomorrow 10:00 AM</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Consultation Fee</span>
+                  <span class="detail-value">$120</span>
+                </div>
+              </div>
+              <button class="book-btn">View Profile & Book</button>
+            </div>
+
+            <!-- Doctor Card 3 -->
+            <div class="doctor-card">
+              <div class="doctor-header">
+                <div class="doctor-avatar">MC</div>
+                <div class="doctor-info">
+                  <h3>Dr. Michael Chen</h3>
+                  <div class="doctor-specialty">Dermatologist</div>
+                  <div class="doctor-rating">⭐ 4.7 (156 reviews)</div>
+                </div>
+              </div>
+              <div class="doctor-details">
+                <div class="detail-row">
+                  <span class="detail-label">Experience</span>
+                  <span class="detail-value">15 years</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Next Available</span>
+                  <span class="detail-value">Dec 8, 3:30 PM</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Consultation Fee</span>
+                  <span class="detail-value">$180</span>
+                </div>
+              </div>
+              <button class="book-btn">View Profile & Book</button>
+            </div>
+
+            <!-- Doctor Card 4 -->
+            <div class="doctor-card">
+              <div class="doctor-header">
+                <div class="doctor-avatar">RW</div>
+                <div class="doctor-info">
+                  <h3>Dr. Robert Wilson</h3>
+                  <div class="doctor-specialty">Internal Medicine</div>
+                  <div class="doctor-rating">⭐ 4.6 (203 reviews)</div>
+                </div>
+              </div>
+              <div class="doctor-details">
+                <div class="detail-row">
+                  <span class="detail-label">Experience</span>
+                  <span class="detail-value">20 years</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Next Available</span>
+                  <span class="detail-value">Dec 5, 11:00 AM</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Consultation Fee</span>
+                  <span class="detail-value">$140</span>
+                </div>
+              </div>
+              <button class="book-btn">View Profile & Book</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </main>
+
+    <footer data-layout="footer"></footer>
+
+    <script type="module">
+      import { initLayout } from "../js/layout.js";
+      initLayout("find-doctors");
+    </script>
+  </body>
+</html>
