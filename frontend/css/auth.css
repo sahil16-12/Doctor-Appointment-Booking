@@ -182,7 +182,7 @@ input[type="radio"]:checked + span {
 }
 
 .terms-checkbox {
-  width: auto !important;
+  width: auto;
 }
 
 /* Login specific styles */
