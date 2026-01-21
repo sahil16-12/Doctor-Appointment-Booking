@@ -1,0 +1,91 @@
+/* Toast Notification Container */
+#toastContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+/* Toast Card */
+.toast-message {
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+  animation: slideInRight 0.4s ease-out;
+  min-width: 300px;
+}
+
+.toast-message.success {
+  background: linear-gradient(135deg, #1a4d1a 0%, #2d5a2d 100%);
+  color: #a0f7a0;
+  border-left: 4px solid #4caf50;
+}
+
+.toast-message.error {
+  background: linear-gradient(135deg, #4d1a1a 0%, #5a2d2d 100%);
+  color: #f7a0a0;
+  border-left: 4px solid #f44336;
+}
+
+.toast-message::before {
+  content: '';
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.toast-message.success::before {
+  content: '✓';
+  color: #4caf50;
+}
+
+.toast-message.error::before {
+  content: '✕';
+  color: #f44336;
+}
+
+/* Slide in animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+}
+
+.toast-message.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #toastContainer {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .toast-message {
+    min-width: auto;
+  }
+}

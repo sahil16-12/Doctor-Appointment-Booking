@@ -7,8 +7,10 @@
 
     <link rel="stylesheet" href="../css/globals.css" />
     <link rel="stylesheet" href="../css/auth.css" />
+    <link rel="stylesheet" href="../css/form-message.css" />
   </head>
   <body class="auth-page">
+    <div id="toastContainer"></div>
     <header data-layout="header"></header>
 
     <main class="auth-main center">
@@ -50,17 +52,6 @@
 
     <footer data-layout="footer"></footer>
 
-    <script type="module">
-      import { initLayout } from "../js/layout.js";
-      initLayout("login");
-
-      document.getElementById("loginForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const userType = document.querySelector(
-          'input[name="userType"]:checked'
-        ).value;
-        alert(`Login functionality coming soon for ${userType}s!`);
-      });
-    </script>
+    <script type="module" src="../js/login.js"></script>
   </body>
 </html>

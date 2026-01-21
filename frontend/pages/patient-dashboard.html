@@ -9,6 +9,16 @@
   </head>
   <body class="dashboard-page">
     <header data-layout="header"></header>
+    <div
+      id="userBar"
+      class="user-bar"
+      style="
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 1rem 2rem 0 0;
+      "
+    ></div>
 
     <main>
       <!-- Dashboard Header -->
@@ -298,6 +308,8 @@
     <script type="module">
       import { initLayout } from "../js/layout.js";
       initLayout("patient-dashboard");
+
+      </script>
     </script>
   </body>
 </html>

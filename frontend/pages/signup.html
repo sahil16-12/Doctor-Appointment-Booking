@@ -7,8 +7,10 @@
 
     <link rel="stylesheet" href="../css/globals.css" />
     <link rel="stylesheet" href="../css/auth.css" />
+    <link rel="stylesheet" href="../css/form-message.css" />
   </head>
   <body class="auth-page">
+    <div id="toastContainer"></div>
     <header data-layout="header"></header>
 
     <main class="auth-main center">
@@ -74,33 +76,6 @@
 
     <footer data-layout="footer"></footer>
 
-    <script type="module">
-      import { initLayout } from "../js/layout.js";
-      initLayout("signup");
-
-      document.getElementById("signupForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        alert("Signup functionality coming soon!");
-      });
-
-      // Handle user type switching
-      const userTypeRadios = document.querySelectorAll(
-        'input[name="userType"]'
-      );
-      const patientFields = document.getElementById("patientFields");
-      const doctorFields = document.getElementById("doctorFields");
-
-      userTypeRadios.forEach((radio) => {
-        radio.addEventListener("change", function () {
-          if (this.value === "patient") {
-            patientFields.style.display = "block";
-            doctorFields.style.display = "none";
-          } else {
-            patientFields.style.display = "none";
-            doctorFields.style.display = "block";
-          }
-        });
-      });
-    </script>
+    <script type="module" src="../js/signup.js"></script>
   </body>
 </html>
