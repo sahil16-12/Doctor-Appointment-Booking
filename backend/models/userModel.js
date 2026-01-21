@@ -12,6 +12,7 @@ const createUser = async (user) => {
       user.passwordHash,
     ]
   );
+  console.log("User creation result: ", result);
   return result.insertId;
 };
 
@@ -38,7 +39,57 @@ const findUserByEmail = async (email) => {
   const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [
     email,
   ]);
+  console.log("Find user by email result: ", rows);
   return rows[0];
 };
 
-export { createUser, createPatient, createDoctor, findUserByEmail };
+
+const findPatientByUserId = async (userId) => {
+  const [rows] = await db.execute(
+    `
+    SELECT 
+      u.id,
+      u.user_type,
+      u.full_name,
+      u.email,
+      u.phone,
+      u.dob,
+      u.created_at,
+      p.emergency_contact,
+      p.allergies
+    FROM users u
+    JOIN patients p ON p.user_id = u.id
+    WHERE u.id = ?
+    `,
+    [userId]
+  );
+
+  return rows[0];
+};
+
+const findDoctorByUserId = async (userId) => {
+  const [rows] = await db.execute(
+    `
+    SELECT 
+      u.id,
+      u.user_type,
+      u.full_name,
+      u.email,
+      u.phone,
+      u.dob,
+      u.created_at,
+      d.specialization,
+      d.license_number,
+      d.years_experience
+    FROM users u
+    JOIN doctors d ON d.user_id = u.id
+    WHERE u.id = ?
+    `,
+    [userId]
+  );
+
+  return rows[0];
+};
+
+
+export { createUser, createPatient, createDoctor, findUserByEmail, findPatientByUserId, findDoctorByUserId };

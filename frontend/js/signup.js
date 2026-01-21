@@ -82,6 +82,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
       body: JSON.stringify(payload),
     });
     const data = await res.json();
+    console.log("Data is : ", data);  // Here server error is coming, why
     if (res.ok) {
       showToast("Signup successful! Redirecting to login...", "success");
       setTimeout(() => {

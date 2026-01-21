@@ -94,3 +94,18 @@ footer {
   color: #aaa;
   font-size: 0.9rem;
 }
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #ff4d8d;
+  color: #ff4d8d;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #ff4d8d;
+  color: #000;
+}

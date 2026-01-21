@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doctor Dashboard - Sehat</title>
+  <link rel="stylesheet" href="../css/globals.css" />
+  <link rel="stylesheet" href="../css/patient-dashboard.css" />
+</head>
+
+<body class="dashboard-page">
+
+
+  <header data-layout="header"></header>
+
+
+  <main class="dashboard">
+    <h1 class="dashboard-title">Welcome Dr. <span id="doctorName">Doctor</span></h1>
+
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Contact</h3>
+        <p><b>Email:</b> <span id="email"></span></p>
+        <p><b>Phone:</b> <span id="phone"></span></p>
+      </div>
+
+
+      <div class="card">
+        <h3>Professional</h3>
+        <p><b>Specialization:</b> <span id="specialization"></span></p>
+        <p><b>License:</b> <span id="license"></span></p>
+        <p><b>Experience:</b> <span id="experience"></span> yrs</p>
+      </div>
+
+
+      <div class="card accent">
+        <h3>Next Step</h3>
+        <p>Appointments & patients coming soon</p>
+        <button class="btn">Open Schedule (soon)</button>
+      </div>
+    </div>
+  </main>
+
+
+  <footer data-layout="footer"></footer>
+
+
+  <script type="module" src="../js/doctor-dashboard.js"></script>
+</body>
+
+</html>

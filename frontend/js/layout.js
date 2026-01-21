@@ -23,6 +23,11 @@ export function initLayout(pageType) {
   } else if (pageType === "signup") {
     authLinks = createNavLink("login.html", "Login");
   }
+  else if (pageType.includes("dashboard")) {
+    authLinks = `
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    `;
+  }
 
   headerEl.innerHTML = `
     <div class="navbar">
@@ -38,4 +43,13 @@ export function initLayout(pageType) {
       <p>&copy; ${new Date().getFullYear()} Sehat. All rights reserved.</p>
     </div>
   `;
+  // Logout handler
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("profile");
+      window.location.href = basePath + "index.html";
+    });
+  }
 }
