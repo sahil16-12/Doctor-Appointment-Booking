@@ -1,55 +1,70 @@
-function createNavLink(href, label) {
-  return `<a href="${href}">${label}</a>`;
+async function loadHTML(url, fallbackHTML = "") {
+  try {
+    return await $.get(url);
+  } catch (err) {
+    console.error(`Failed to load: ${url}`, err);
+    return fallbackHTML;
+  }
 }
 
-export function initLayout(pageType) {
-  const headerEl = document.querySelector('[data-layout="header"]');
-  const footerEl = document.querySelector('[data-layout="footer"]');
+function getBasePath() {
+  return window.location.pathname.includes("/pages/") ? "../" : "./";
+}
 
-  if (!headerEl || !footerEl) return;
+function getAuthComponent(pageType) {
+  if (pageType === "landing") return "landing";
+  if (pageType === "login") return "login";
+  if (pageType === "signup") return "signup";
+  if (pageType.includes("dashboard")) return "dashboard";
+  return null;
+}
 
-  const currentPath = window.location.pathname;
-  const isInPagesFolder = currentPath.includes('/pages/');
-  const basePath = isInPagesFolder ? '../' : './';
+export async function initLayout(pageType) {
+  const $header = $('[data-layout="header"]');
+  const $footer = $('[data-layout="footer"]');
+  if (!$header.length || !$footer.length) return;
 
-  let authLinks = "";
+  const basePath = getBasePath();
 
-  if (pageType === "landing") {
-    authLinks =
-      createNavLink(`${basePath}pages/login.html`, "Login") +
-      `<a href="${basePath}pages/signup.html" class="signup-btn">Sign Up</a>`;
-  } else if (pageType === "login") {
-    authLinks = `<a href="signup.html" class="signup-btn">Sign Up</a>`;
-  } else if (pageType === "signup") {
-    authLinks = createNavLink("login.html", "Login");
+  const results = await Promise.allSettled([
+    loadHTML(`${basePath}components/header.html`),
+    loadHTML(`${basePath}components/footer.html`)
+  ]);
+
+  const headerHTML =
+    results[0].status === "fulfilled" ? results[0].value : "";
+
+  const footerHTML =
+    results[1].status === "fulfilled" ? results[1].value : "";
+
+
+
+  $header.html(
+    headerHTML
+      ? headerHTML.replace("{{BASE_PATH}}", basePath)
+      : "<div class='navbar'>Sehat</div>"
+  );
+
+  $footer.html(
+    footerHTML
+      ? footerHTML.replace("{{YEAR}}", new Date().getFullYear())
+      : "<p>&copy; Sehat</p>"
+  );
+
+  const authComponent = getAuthComponent(pageType);
+  if (authComponent) {
+    const authHTML = await loadHTML(
+      `${basePath}components/auth/${authComponent}.html`
+    );
+  
+    $header.find("[data-auth-links]").html(
+      authHTML.replace(/{{BASE_PATH}}/g, basePath)
+    );
   }
-  else if (pageType.includes("dashboard")) {
-    authLinks = `
-      <button id="logoutBtn" class="logout-btn">Logout</button>
-    `;
-  }
+  
 
-  headerEl.innerHTML = `
-    <div class="navbar">
-      <a href="${basePath}index.html" class="logo">Sehat</a>
-      <nav class="nav-links">
-        ${authLinks}
-      </nav>
-    </div>
-  `;
-
-  footerEl.innerHTML = `
-    <div class="footer-inner">
-      <p>&copy; ${new Date().getFullYear()} Sehat. All rights reserved.</p>
-    </div>
-  `;
-  // Logout handler
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("profile");
-      window.location.href = basePath + "index.html";
-    });
-  }
+  $("#logoutBtn").on("click", () => {
+    sessionStorage.clear();
+    window.location.href = basePath + "index.html";
+  });
 }
