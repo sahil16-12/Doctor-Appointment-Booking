@@ -6,7 +6,7 @@ import SignupForm from "./auth/SignupForm.js";
 initLayout("signup");
 
 $(function () {
-  const api = new ApiClient("http://localhost:5000");
+  const api = new ApiClient("https://localhost:7168");
   const toast = new ToastManager();
   new SignupForm("#signupForm", api, toast);
 });

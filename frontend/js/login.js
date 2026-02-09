@@ -6,7 +6,7 @@ import LoginForm from "./auth/LoginForm.js";
 initLayout("login");
 
 $(function () {
-  const api = new ApiClient("http://localhost:5000");
+  const api = new ApiClient("https://localhost:7168");
   const toast = new ToastManager();
   new LoginForm("#loginForm", api, toast);
 });
