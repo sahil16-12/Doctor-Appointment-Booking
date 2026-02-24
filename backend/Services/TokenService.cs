@@ -6,27 +6,48 @@ using backend.Models;
 
 namespace backend.Services
 {
+    /// <summary>
+    /// Provides JWT token generation implementation.
+    /// </summary>
     public class TokenService : ITokenService
     {
+        #region Private Fields
+
+        /// <summary>
+        /// Represents application configuration access.
+        /// </summary>
         private readonly IConfiguration _configuration;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenService"/> class.
+        /// </summary>
+        /// <param name="configuration">The application configuration provider.</param>
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <inheritdoc/>
         public string GenerateToken(int userId, UserType userType)
         {
-            var jwtSecret = _configuration["Jwt:Secret"];
+            string? jwtSecret = _configuration["Jwt:Secret"];
             if (string.IsNullOrEmpty(jwtSecret))
             {
                 throw new InvalidOperationException("JWT Secret is not configured");
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(jwtSecret);
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            byte[] key = Encoding.ASCII.GetBytes(jwtSecret);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
@@ -39,8 +60,10 @@ namespace backend.Services
                     SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        #endregion
     }
 }

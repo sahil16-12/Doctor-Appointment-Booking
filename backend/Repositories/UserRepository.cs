@@ -1,91 +1,81 @@
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
-using backend.DTOs;
 
 namespace backend.Repositories
 {
+    /// <summary>
+    /// Provides persistence operations for users, patients, and doctors.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
+        #region Private Fields
+
+        /// <summary>
+        /// Represents the database context instance.
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<int> CreateUserAsync(User user)
+        #endregion
+
+        #region Public Methods
+
+        /// <inheritdoc/>
+        public async Task<int> CreateUserAsync(TBL01 user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return user.Id;
+            return user.L01F01;
         }
 
-        public async Task CreatePatientAsync(Patient patient)
+        /// <inheritdoc/>
+        public async Task CreatePatientAsync(TBL02 patient)
         {
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateDoctorAsync(Doctor doctor)
+        /// <inheritdoc/>
+        public async Task CreateDoctorAsync(TBL03 doctor)
         {
             _context.Doctors.Add(doctor);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<User?> FindUserByEmailAsync(string email)
+        /// <inheritdoc/>
+        public async Task<TBL01?> FindUserByEmailAsync(string email)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .FirstOrDefaultAsync(u => u.L01F04 == email);
         }
 
-        public async Task<PatientProfile?> FindPatientByUserIdAsync(int userId)
+        /// <inheritdoc/>
+        public async Task<TBL02?> FindPatientByUserIdAsync(int userId)
         {
-            var result = await _context.Users
-                .Where(u => u.Id == userId)
-                .Join(_context.Patients,
-                    u => u.Id,
-                    p => p.UserId,
-                    (u, p) => new PatientProfile
-                    {
-                        Id = u.Id,
-                        UserType = u.UserType,
-                        FullName = u.FullName,
-                        Email = u.Email,
-                        Phone = u.Phone,
-                        Dob = u.Dob,
-                        CreatedAt = u.CreatedAt,
-                        EmergencyContact = p.EmergencyContact,
-                        Allergies = p.Allergies
-                    })
-                .FirstOrDefaultAsync();
-
-            return result;
+            return await _context.Patients
+                .FirstOrDefaultAsync(patient => patient.L02F02 == userId);
         }
 
-        public async Task<DoctorProfile?> FindDoctorByUserIdAsync(int userId)
+        /// <inheritdoc/>
+        public async Task<TBL03?> FindDoctorByUserIdAsync(int userId)
         {
-            var result = await _context.Users
-                .Where(u => u.Id == userId)
-                .Join(_context.Doctors,
-                    u => u.Id,
-                    d => d.UserId,
-                    (u, d) => new DoctorProfile
-                    {
-                        Id = u.Id,
-                        UserType = u.UserType,
-                        FullName = u.FullName,
-                        Email = u.Email,
-                        Phone = u.Phone,
-                        Dob = u.Dob,
-                        CreatedAt = u.CreatedAt,
-                        Specialization = d.Specialization,
-                        LicenseNumber = d.LicenseNumber,
-                        YearsExperience = d.YearsExperience
-                    })
-                .FirstOrDefaultAsync();
-
-            return result;
+            return await _context.Doctors
+                .FirstOrDefaultAsync(doctor => doctor.L03F02 == userId);
         }
+
+        #endregion
     }
 }

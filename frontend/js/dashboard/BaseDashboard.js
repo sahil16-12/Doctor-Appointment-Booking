@@ -12,7 +12,7 @@ export default class BaseDashboard {
   }
 
   initAuth() {
-    this.profile = AuthService.requireRole(this.role);
+    this.profile = AuthService.requireRole(this.role, "./login.html");
     if (!this.profile) return false;
     return true;
   }

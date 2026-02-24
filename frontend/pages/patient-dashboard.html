@@ -1,53 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient Dashboard - Sehat</title>
     <link rel="stylesheet" href="../css/globals.css" />
     <link rel="stylesheet" href="../css/patient-dashboard.css" />
-</head>
+  </head>
 
-<body class="dashboard-page">
-
-
+  <body class="dashboard-page">
     <header data-layout="header"></header>
 
-
     <main class="dashboard">
-        <h1 class="dashboard-title">Welcome, <span id="patientName">Patient</span></h1>
-
-
-        <div class="card-grid">
-            <div class="card">
-                <h3>Personal Info</h3>
-                <p><b>Email:</b> <span id="email"></span></p>
-                <p><b>Phone:</b> <span id="phone"></span></p>
-                <p><b>DOB:</b> <span id="dob"></span></p>
-            </div>
-
-
-            <div class="card">
-                <h3>Medical Info</h3>
-                <p><b>Allergies:</b> <span id="allergies"></span></p>
-                <p><b>Emergency:</b> <span id="emergency"></span></p>
-            </div>
-
-
-            <div class="card accent">
-                <h3>Next Step</h3>
-                <p>Find doctors & book appointments</p>
-                <button class="btn">Find Doctor (soon)</button>
-            </div>
+      <!-- Header Section -->
+      <div class="dashboard-header">
+        <div class="welcome-section">
+          <h1>Welcome back, <span id="patientName">Patient</span>! 👋</h1>
+          <p id="lastLogin">Last login today at 2:30 PM</p>
         </div>
-    </main>
+        <div class="user-badge">
+          <div class="badge-icon">💊</div>
+          <div class="badge-info">
+            <h3>Member Since</h3>
+            <p id="memberSince">Feb 2026</p>
+          </div>
+        </div>
+      </div>
 
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Upcoming Appointments</div>
+          <div class="stat-value" id="upcomingCount">2</div>
+          <div class="stat-detail">Next in 5 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed Visits</div>
+          <div class="stat-value" id="completedCount">8</div>
+          <div class="stat-detail">This year</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Health Score</div>
+          <div class="stat-value">85%</div>
+          <div class="stat-detail">Great job! Keep it up</div>
+        </div>
+      </div>
+
+      <!-- Personal Info Section -->
+      <h2 class="section-title">Personal Information</h2>
+      <div class="cards-grid">
+        <div class="info-card">
+          <h3>📋 Basic Information</h3>
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value" id="email">john@example.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value" id="infoEmail">john@example.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone</span>
+            <span class="info-value" id="infoPhone">+1 (555) 123-4567</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Date of Birth</span>
+            <span class="info-value" id="infoDob">Jan 15, 1995</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>🏥 Medical Information</h3>
+          <div class="info-item">
+            <span class="info-label">Blood Type</span>
+            <span class="info-value">O+</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Allergies</span>
+            <span class="info-value" id="infoAllergies"
+              >Peanuts, Penicillin</span
+            >
+          </div>
+          <div class="info-item">
+            <span class="info-label">Emergency Contact</span>
+            <span class="info-value" id="infoEmergency">+1 (555) 987-6543</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Last Checkup</span>
+            <span class="info-value">Dec 15, 2025</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointments Section -->
+      <h2 class="section-title">Your Appointments</h2>
+      <div class="appointments-section">
+        <div class="appointment-list">
+          <div class="appointment-item">
+            <div class="appointment-icon">📅</div>
+            <div class="appointment-details">
+              <div class="appointment-doctor">
+                Dr. Sarah Johnson - Cardiology
+              </div>
+              <div class="appointment-info">
+                Feb 19, 2026 at 10:00 AM • Room 203
+              </div>
+            </div>
+            <span class="appointment-status status-upcoming">Upcoming</span>
+          </div>
+
+          <div class="appointment-item">
+            <div class="appointment-icon">📅</div>
+            <div class="appointment-details">
+              <div class="appointment-doctor">
+                Dr. Michael Chen - General Practice
+              </div>
+              <div class="appointment-info">
+                Feb 24, 2026 at 2:30 PM • Room 105
+              </div>
+            </div>
+            <span class="appointment-status status-upcoming">Upcoming</span>
+          </div>
+
+          <div class="appointment-item">
+            <div class="appointment-icon">✅</div>
+            <div class="appointment-details">
+              <div class="appointment-doctor">
+                Dr. Emily Rodriguez - Dermatology
+              </div>
+              <div class="appointment-info">Feb 10, 2026 at 11:00 AM</div>
+            </div>
+            <span class="appointment-status status-completed">Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="action-section">
+        <div class="action-card">
+          <div class="action-icon">🔍</div>
+          <h3>Find Doctors</h3>
+          <p>
+            Search and book appointments with verified healthcare professionals
+          </p>
+          <button class="action-btn">Browse Doctors</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📝</div>
+          <h3>Medical Records</h3>
+          <p>Access and manage your health records and prescriptions</p>
+          <button class="action-btn">View Records</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">👥</div>
+          <h3>My Doctors</h3>
+          <p>View your list of regular doctors and specialists</p>
+          <button class="action-btn">View Doctors</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">⚙️</div>
+          <h3>Settings</h3>
+          <p>Update your profile and preferences</p>
+          <button class="action-btn">Edit Profile</button>
+        </div>
+      </div>
+    </main>
 
     <footer data-layout="footer"></footer>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="module" src="../js/patient-dashboard.js"></script>
-</body>
-
+  </body>
 </html>

@@ -1,10 +1,11 @@
 
 :root {
-  --bg-color: #121212;
-  --text-color: #f2f2f2;
-  --accent-color: #ff4da6;
-  --accent-color-hover: #ff66b2;
-  --card-bg: #1e1e1e;
+  --bg-color: #f5f7fa;
+  --text-color: #1e293b;
+  --accent-color: #2563eb;
+  --accent-color-hover: #1d4ed8;
+  --card-bg: #ffffff;
+  --navbar-bg: #0f172a;
   --transition: 0.3s ease;
 }
 
@@ -62,43 +63,45 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 3rem;
-  background-color: var(--card-bg);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  background-color: var(--navbar-bg);
+  box-shadow: 0 4px 15px rgba(0, 31, 63, 0.15);
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--accent-color);
+  color: #ffffff;
 }
 
 .nav-links a {
   margin-left: 1.5rem;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .signup-btn {
   padding: 0.5rem 1rem;
   border-radius: 5px;
-  border: 1px solid var(--accent-color);
+  border: 1px solid #ffffff;
+  color: #ffffff;
 }
 
 footer {
   margin-top: auto;
-  background: var(--card-bg);
+  background: var(--navbar-bg);
   padding: 1rem 0;
 }
 
 .footer-inner {
   text-align: center;
-  color: #aaa;
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
 .logout-btn {
   background: transparent;
-  border: 1px solid #ff4d8d;
-  color: #ff4d8d;
+  border: 1px solid #ffffff;
+  color: #ffffff;
   padding: 0.4rem 1rem;
   border-radius: 999px;
   cursor: pointer;
@@ -106,6 +109,6 @@ footer {
 }
 
 .logout-btn:hover {
-  background: #ff4d8d;
-  color: #000;
+  background: #ffffff;
+  color: #001f3f;
 }

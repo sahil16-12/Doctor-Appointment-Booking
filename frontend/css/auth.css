@@ -9,7 +9,7 @@
 .auth-main {
   flex: 1;
   padding: 2rem 1rem;
-  background: radial-gradient(circle at top left, #1c1c1c, #111);
+  background: linear-gradient(135deg, #f8fafb 0%, #f0f4f8 100%);
 }
 
 
@@ -17,11 +17,12 @@
   background: var(--card-bg);
   padding: 2.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1);
   width: 90%;
   max-width: 400px;
   text-align: center;
   animation: fadeIn 0.8s ease-in;
+  border: 1px solid #e2e8f0;
 }
 
 .auth-box h2 {
@@ -31,25 +32,30 @@
 
 .auth-box p {
   margin-bottom: 1.5rem;
-  color: #aaa;
+  color: #5a6c7d;
 }
 
 .auth-box input {
   width: 100%;
   padding: 0.8rem;
   margin: 0.5rem 0;
-  border: none;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-  background: #2b2b2b;
+  background: #f8fafc;
   color: var(--text-color);
 }
 
 .auth-box input::placeholder {
-  color: #777;
+  color: #a0aab5;
 }
 
 .auth-box input:focus {
   outline: 1px solid var(--accent-color);
+}
+
+.auth-box input:required,
+.auth-box select:required {
+  border-color: #2563eb;
 }
 
 .auth-box button {
@@ -57,7 +63,7 @@
   padding: 0.8rem;
   margin-top: 0.5rem;
   background: var(--accent-color);
-  color: #fff;
+  color: #ffffff;
   border-radius: 6px;
   font-weight: 600;
 }
@@ -69,7 +75,7 @@
 
 .switch {
   margin-top: 1rem;
-  color: #bbb;
+  color: #5a6c7d;
   font-size: 0.9rem;
 }
 
@@ -93,9 +99,9 @@ input[type="radio"]:checked + span {
   width: 100%;
   padding: 0.8rem;
   margin: 0.5rem 0;
-  border: none;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-  background: #2b2b2b;
+  background: #f8fafc;
   color: var(--text-color);
   cursor: pointer;
 }
@@ -105,7 +111,7 @@ input[type="radio"]:checked + span {
 }
 
 .auth-box select option {
-  background: #2b2b2b;
+  background: #ffffff;
   color: var(--text-color);
 }
 
@@ -115,7 +121,7 @@ input[type="radio"]:checked + span {
 }
 
 .auth-box input[type="date"] {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* User Type Selection */
@@ -140,17 +146,17 @@ input[type="radio"]:checked + span {
   display: inline-block;
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #444;
+  border: 2px solid #e2e8f0;
   border-radius: 6px;
-  background: #2b2b2b;
-  color: #ccc;
+  background: #f8fafc;
+  color: #64748b;
   text-align: center;
   transition: var(--transition);
 }
 
 .user-type-span:hover {
   border-color: var(--accent-color);
-  background: rgba(255, 77, 166, 0.1);
+  background: rgba(37, 99, 235, 0.05);
 }
 
 /* Doctor Fields */
@@ -204,11 +210,12 @@ input[type="radio"]:checked + span {
 .user-type-display {
   display: inline-block;
   padding: 0.5rem;
-  border: 1px solid #444;
+  border: 1px solid #e2e8f0;
   border-radius: 4px;
   text-align: center;
   width: 100%;
-  background: #2b2b2b;
+  background: #f8fafc;
+  color: #64748b;
 }
 
 .login-options {
@@ -223,7 +230,7 @@ input[type="radio"]:checked + span {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #aaa;
+  color: #5a6c7d;
 }
 
 .remember-me input[type="checkbox"] {

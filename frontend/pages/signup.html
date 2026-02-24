@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -17,8 +17,11 @@
       <form class="auth-box" id="signupForm">
         <h2>Create Your Account</h2>
         <p>Join Sehat and start booking appointments</p>
+        <p style="font-size: 0.8rem; color: #2563eb; margin-bottom: 1rem">
+          * indicates required fields
+        </p>
 
-         <!-- User Type Selection  -->
+        <!-- User Type Selection  -->
         <div class="user-type-selection">
           <label class="user-type-label">
             <input type="radio" name="userType" value="patient" checked />
@@ -30,38 +33,79 @@
           </label>
         </div>
 
-        <input type="text" placeholder="Full Name" required />
-        <input type="email" placeholder="Email Address" required />
-        <input type="tel" placeholder="Phone Number" required />
-        <input type="date" placeholder="Date of Birth" required />
+        <input type="text" name="fullName" placeholder="Full Name*" required />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address*"
+          required
+        />
+        <input type="tel" name="phone" placeholder="Phone Number*" required />
+        <input type="date" name="dob" placeholder="Date of Birth*" required />
 
         <!-- Patient specific fields -->
         <div id="patientFields">
-          <input type="text" placeholder="Emergency Contact (Optional)" />
-          <input type="text" placeholder="Known Allergies (Optional)" />
+          <input
+            type="text"
+            name="emergencyContact"
+            placeholder="Emergency Contact (Optional)"
+          />
+          <input
+            type="text"
+            name="allergies"
+            placeholder="Known Allergies (Optional)"
+          />
         </div>
 
         <!-- Doctor specific fields -->
         <div id="doctorFields" class="doctor-fields">
-          <select>
-            <option value="">Select Specialization</option>
+          <select name="specialization" required disabled>
+            <option value="">Select Specialization*</option>
             <option value="general">General Practice</option>
             <option value="cardiology">Cardiology</option>
             <option value="dermatology">Dermatology</option>
             <option value="pediatrics">Pediatrics</option>
             <option value="orthopedics">Orthopedics</option>
           </select>
-          <input type="text" placeholder="Medical License Number" />
-          <input type="number" placeholder="Years of Experience" min="0" />
+          <input
+            type="text"
+            name="licenseNumber"
+            placeholder="Medical License Number*"
+            required
+            disabled
+          />
+          <input
+            type="number"
+            name="yearsExperience"
+            placeholder="Years of Experience*"
+            min="0"
+            required
+            disabled
+          />
         </div>
 
-        <input type="password" placeholder="Password" required />
-        <input type="password" placeholder="Confirm Password" required />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password*"
+          required
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password*"
+          required
+        />
 
         <label class="terms-container">
-          <input type="checkbox" required class="terms-checkbox" />
+          <input
+            type="checkbox"
+            name="termsAccepted"
+            required
+            class="terms-checkbox"
+          />
           <span class="terms-label"
-            >I agree to the Terms of Service and Privacy Policy</span
+            >I agree to the Terms of Service and Privacy Policy*</span
           >
         </label>
 

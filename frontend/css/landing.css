@@ -17,13 +17,13 @@
 .hero-content p {
   max-width: 600px;
   margin: 0 auto 2rem auto;
-  color: #ccc;
+  color: #5a6c7d;
 }
 
 .cta-btn {
   display: inline-block;
   background-color: var(--accent-color);
-  color: #fff;
+  color: #ffffff;
   padding: 0.75rem 2rem;
   border-radius: 30px;
   font-weight: 600;
@@ -37,7 +37,8 @@
 /* Features Section */
 .features-section {
   padding: 4rem 2rem;
-  background: var(--card-bg);
+  background: var(--navbar-bg);
+  color: #ffffff;
 }
 
 .features-container {
@@ -48,7 +49,7 @@
 
 .features-title {
   margin-bottom: 2rem;
-  color: var(--accent-color);
+  color: #ffffff;
 }
 
 .features-grid {
@@ -59,19 +60,20 @@
 }
 
 .feature-card {
-  background: var(--bg-color);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2rem;
   border-radius: 10px;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .feature-card h3 {
-  color: var(--accent-color);
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
 .feature-card p {
-  color: #ccc;
+  color: #e0e8f0;
   line-height: 1.6;
 }
 
@@ -111,7 +113,7 @@
   justify-content: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
+  color: #ffffff;
 }
 
 .step-title {
@@ -120,15 +122,16 @@
 }
 
 .step-description {
-  color: #aaa;
+  color: #d0dae5;
   font-size: 0.9rem;
 }
 
 /* CTA Section */
 .cta-section {
   padding: 4rem 2rem;
-  background: var(--card-bg);
+  background: var(--navbar-bg);
   text-align: center;
+  color: #ffffff;
 }
 
 .cta-container {
@@ -138,11 +141,11 @@
 
 .cta-title {
   margin-bottom: 1rem;
-  color: var(--text-color);
+  color: #ffffff;
 }
 
 .cta-description {
-  color: #ccc;
+  color: #e0e8f0;
   margin-bottom: 2rem;
 }
 

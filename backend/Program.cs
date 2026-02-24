@@ -1,41 +1,73 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using backend.Data;
+using backend.DTOs;
+using backend.Mapping;
 using backend.Repositories;
 using backend.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+#region Builder Setup
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+#endregion
+
+#region Service Configuration
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     });
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        string firstError = context.ModelState
+            .Where(entry => entry.Value?.Errors.Count > 0)
+            .SelectMany(entry => entry.Value!.Errors)
+            .Select(error => string.IsNullOrWhiteSpace(error.ErrorMessage)
+                ? "Invalid request payload."
+                : error.ErrorMessage)
+            .FirstOrDefault() ?? "Invalid request payload.";
+
+        ErrorResponse response = new ErrorResponse
+        {
+            Message = firstError
+        };
+
+        return new BadRequestObjectResult(response);
+    };
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
+    options.AddDefaultPolicy(policyBuilder =>
     {
-        builder.AllowAnyOrigin()
+        policyBuilder.AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
 });
 
-// Add Database Context
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("DefaultConnection is not configured");
+}
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Add JWT Authentication
-var jwtSecret = builder.Configuration["Jwt:Secret"];
+string? jwtSecret = builder.Configuration["Jwt:Secret"];
 if (string.IsNullOrEmpty(jwtSecret))
 {
     throw new InvalidOperationException("JWT Secret is not configured");
@@ -44,7 +76,6 @@ if (string.IsNullOrEmpty(jwtSecret))
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -59,14 +90,19 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Register services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IReflectionMapper, ReflectionMapper>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
-var app = builder.Build();
+#endregion
 
-// Configure the HTTP request pipeline.
+#region Application Pipeline
+
+WebApplication app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -74,12 +110,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
+#endregion

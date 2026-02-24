@@ -8,11 +8,20 @@ export default class DoctorDashboard extends BaseDashboard {
   render() {
     const p = this.profile;
 
-    this.setText("#doctorName", p.full_name);
-    this.setText("#email", p.email);
-    this.setText("#phone", p.phone);
-    this.setText("#specialization", p.specialization);
-    this.setText("#license", p.license_number);
-    this.setText("#experience", p.years_experience);
+    // Basic info
+    $("#doctorName").text(this.safe(p.fullName));
+    $("#infoName").text(this.safe(p.fullName));
+    $("#infoEmail").text(this.safe(p.email));
+    $("#infoPhone").text(this.safe(p.phone));
+
+    // Professional info
+    $("#infoSpecialization").text(
+      this.safe(p.specialization) || "General Practice",
+    );
+    $("#infoLicense").text(this.safe(p.licenseNumber) || "LIC-2024-XXXXX");
+    $("#infoExperience").text(this.safe(p.yearsExperience) || "5");
+
+    // Dummy rating for display
+    $("#doctorRating").text("4.8/5.0");
   }
 }

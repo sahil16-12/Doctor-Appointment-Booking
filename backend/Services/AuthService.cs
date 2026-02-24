@@ -1,138 +1,85 @@
-using System.Text.RegularExpressions;
 using backend.DTOs;
+using backend.Mapping;
 using backend.Models;
 using backend.Repositories;
-using BCrypt.Net;
 
 namespace backend.Services
 {
+    /// <summary>
+    /// Provides authentication and signup business logic.
+    /// </summary>
     public class AuthService : IAuthService
     {
+        #region Private Fields
+
+        /// <summary>
+        /// Represents the user repository dependency.
+        /// </summary>
         private readonly IUserRepository _userRepository;
+
+        /// <summary>
+        /// Represents the token service dependency.
+        /// </summary>
         private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository, ITokenService tokenService)
+        /// <summary>
+        /// Represents the reflection mapper dependency.
+        /// </summary>
+        private readonly IReflectionMapper _reflectionMapper;
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthService"/> class.
+        /// </summary>
+        /// <param name="userRepository">The user repository.</param>
+        /// <param name="tokenService">The token service.</param>
+        /// <param name="reflectionMapper">The reflection mapper.</param>
+        public AuthService(IUserRepository userRepository, ITokenService tokenService, IReflectionMapper reflectionMapper)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+            _reflectionMapper = reflectionMapper;
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <inheritdoc/>
         public async Task<ErrorResponse?> SignupAsync(SignupRequest request)
         {
-            // 1. Required fields validation
-            if (string.IsNullOrWhiteSpace(request.FullName) ||
-                string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Phone) ||
-                string.IsNullOrWhiteSpace(request.Password))
-            {
-                return new ErrorResponse { Message = "All required fields must be filled." };
-            }
-
-            // 2. Field validations
-            if (!Enum.IsDefined(typeof(UserType), request.UserType))
-            {
-                return new ErrorResponse { Message = "Invalid user type." };
-            }
-
-            if (!IsValidName(request.FullName))
-            {
-                return new ErrorResponse { Message = "Full name must contain only letters and be at least 3 characters." };
-            }
-
-            if (!IsValidEmail(request.Email))
-            {
-                return new ErrorResponse { Message = "Invalid email format." };
-            }
-
-            if (!IsValidPhone(request.Phone))
-            {
-                return new ErrorResponse { Message = "Phone must be exactly 10 digits." };
-            }
-
-            if (request.Password.Length < 6)
-            {
-                return new ErrorResponse { Message = "Password must be at least 6 characters." };
-            }
-
-            // 3. Optional field validation
-            if (!string.IsNullOrWhiteSpace(request.EmergencyContact) && !IsValidPhone(request.EmergencyContact))
-            {
-                return new ErrorResponse { Message = "Emergency contact must be 10 digits." };
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Allergies) && request.Allergies.Length < 3)
-            {
-                return new ErrorResponse { Message = "Allergies must be at least 3 characters." };
-            }
-
-            if (request.UserType == UserType.DOCTOR)
-            {
-                if (!string.IsNullOrWhiteSpace(request.Specialization) && request.Specialization.Length < 3)
-                {
-                    return new ErrorResponse { Message = "Specialization must be at least 3 characters." };
-                }
-
-                if (!string.IsNullOrWhiteSpace(request.LicenseNumber) && request.LicenseNumber.Length < 5)
-                {
-                    return new ErrorResponse { Message = "License number must be at least 5 characters." };
-                }
-
-                if (request.YearsExperience.HasValue &&
-                    (request.YearsExperience < 0 || request.YearsExperience > 60))
-                {
-                    return new ErrorResponse { Message = "Years of experience must be between 0 and 60." };
-                }
-            }
-
             try
             {
-                // Check if user already exists
-                var existingUser = await _userRepository.FindUserByEmailAsync(request.Email);
+                TBL01? existingUser = await _userRepository.FindUserByEmailAsync(request.Email);
                 if (existingUser != null)
                 {
                     return new ErrorResponse { Message = "Email already registered." };
                 }
 
-                // Hash password
-                var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-                // Create user
-                var user = new User
-                {
-                    UserType = request.UserType,
-                    FullName = request.FullName,
-                    Email = request.Email,
-                    Phone = request.Phone,
-                    Dob = request.Dob,
-                    Password = passwordHash
-                };
+                TBL01 user = _reflectionMapper.Map<SignupRequest, TBL01>(request);
+                user.L01F07 = passwordHash;
 
-                var userId = await _userRepository.CreateUserAsync(user);
+                int userId = await _userRepository.CreateUserAsync(user);
 
-                // Create patient or doctor record
                 if (request.UserType == UserType.PATIENT)
                 {
-                    var patient = new Patient
-                    {
-                        UserId = userId,
-                        EmergencyContact = request.EmergencyContact,
-                        Allergies = request.Allergies
-                    };
+                    TBL02 patient = _reflectionMapper.Map<SignupRequest, TBL02>(request);
+                    patient.L02F02 = userId;
                     await _userRepository.CreatePatientAsync(patient);
                 }
                 else if (request.UserType == UserType.DOCTOR)
                 {
-                    var doctor = new Doctor
-                    {
-                        UserId = userId,
-                        Specialization = request.Specialization,
-                        LicenseNumber = request.LicenseNumber,
-                        YearsExperience = request.YearsExperience
-                    };
+                    TBL03 doctor = _reflectionMapper.Map<SignupRequest, TBL03>(request);
+                    doctor.L03F02 = userId;
                     await _userRepository.CreateDoctorAsync(doctor);
                 }
 
-                return null; // Success
+                return null;
             }
             catch (Exception ex)
             {
@@ -141,54 +88,59 @@ namespace backend.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<(LoginResponse? response, ErrorResponse? error)> LoginAsync(LoginRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.Email) ||
-                string.IsNullOrWhiteSpace(request.Password))
-            {
-                return (null, new ErrorResponse { Message = "All fields are required." });
-            }
-
             try
             {
-                var user = await _userRepository.FindUserByEmailAsync(request.Email);
+                TBL01? user = await _userRepository.FindUserByEmailAsync(request.Email);
 
                 if (user == null)
                 {
                     return (null, new ErrorResponse { Message = "Invalid credentials." });
                 }
 
-                // ROLE CHECK
-                if (user.UserType != request.UserType)
+                if (user.L01F02 != request.UserType)
                 {
                     return (null, new ErrorResponse
                     {
-                        Message = $"You are registered as {user.UserType}. Please login as {user.UserType}."
+                        Message = $"You are registered as {user.L01F02}. Please login as {user.L01F02}."
                     });
                 }
 
-                // Verify password
-                var isMatch = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+                bool isMatch = BCrypt.Net.BCrypt.Verify(request.Password, user.L01F07);
                 if (!isMatch)
                 {
                     return (null, new ErrorResponse { Message = "Invalid credentials." });
                 }
 
-                // Generate JWT token
-                var token = _tokenService.GenerateToken(user.Id, user.UserType);
+                string token = _tokenService.GenerateToken(user.L01F01, user.L01F02);
 
-                // Get full profile
                 object profile;
-                if (user.UserType == UserType.PATIENT)
+                if (user.L01F02 == UserType.PATIENT)
                 {
-                    profile = await _userRepository.FindPatientByUserIdAsync(user.Id) ?? new object();
+                    PatientProfile patientProfile = _reflectionMapper.Map<TBL01, PatientProfile>(user);
+                    TBL02? patient = await _userRepository.FindPatientByUserIdAsync(user.L01F01);
+                    if (patient != null)
+                    {
+                        _reflectionMapper.MapToExisting<TBL02, PatientProfile>(patient, patientProfile);
+                    }
+
+                    profile = patientProfile;
                 }
                 else
                 {
-                    profile = await _userRepository.FindDoctorByUserIdAsync(user.Id) ?? new object();
+                    DoctorProfile doctorProfile = _reflectionMapper.Map<TBL01, DoctorProfile>(user);
+                    TBL03? doctor = await _userRepository.FindDoctorByUserIdAsync(user.L01F01);
+                    if (doctor != null)
+                    {
+                        _reflectionMapper.MapToExisting<TBL03, DoctorProfile>(doctor, doctorProfile);
+                    }
+
+                    profile = doctorProfile;
                 }
 
-                var response = new LoginResponse
+                LoginResponse response = new LoginResponse
                 {
                     Message = "Login successful.",
                     Token = token,
@@ -204,20 +156,6 @@ namespace backend.Services
             }
         }
 
-        // Validation helper methods
-        private bool IsValidEmail(string email)
-        {
-            return Regex.IsMatch(email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$");
-        }
-
-        private bool IsValidPhone(string phone)
-        {
-            return Regex.IsMatch(phone, @"^[0-9]{10}$");
-        }
-
-        private bool IsValidName(string name)
-        {
-            return Regex.IsMatch(name, @"^[a-zA-Z ]{3,}$");
-        }
+        #endregion
     }
 }
