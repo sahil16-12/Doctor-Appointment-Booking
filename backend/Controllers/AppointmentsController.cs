@@ -135,7 +135,7 @@ namespace backend.Controllers
         /// <param name="appointmentId">The appointment identifier.</param>
         /// <param name="request">The decision request payload.</param>
         /// <returns>A status response for decision action.</returns>
-        [HttpPatch("{appointmentId:int}/decision")]
+        [HttpPut("{appointmentId:int}/decision")]
         public async Task<IActionResult> DecideAppointment(int appointmentId, [FromBody] AppointmentDecisionRequest request)
         {
             (int userId, UserType role, ErrorResponse? authError) = GetCurrentUserContext();
@@ -169,7 +169,7 @@ namespace backend.Controllers
         /// <param name="appointmentId">The appointment identifier.</param>
         /// <param name="request">The cancellation request payload.</param>
         /// <returns>A status response for cancellation action.</returns>
-        [HttpPatch("{appointmentId:int}/cancel")]
+        [HttpPut("{appointmentId:int}/cancel")]
         public async Task<IActionResult> CancelFutureAppointment(int appointmentId, [FromBody] CancelAppointmentRequest request)
         {
             (int userId, UserType role, ErrorResponse? authError) = GetCurrentUserContext();
@@ -207,8 +207,8 @@ namespace backend.Controllers
         /// <returns>A tuple with user id, role, and optional error response.</returns>
         private (int userId, UserType role, ErrorResponse? error) GetCurrentUserContext()
         {
-            string? idClaim = User.FindFirstValue("id");
-            string? roleClaim = User.FindFirstValue("role");
+            string? idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string? roleClaim = User.FindFirstValue(ClaimTypes.Role);
 
             bool isUserIdValid = int.TryParse(idClaim, out int userId);
             bool isRoleValid = Enum.TryParse(roleClaim, true, out UserType role);

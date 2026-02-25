@@ -5,6 +5,145 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Appointments/doctors/available": {
+      "get": {
+        "tags": [
+          "Appointments"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointments": {
+      "post": {
+        "tags": [
+          "Appointments"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointments/doctor/pending": {
+      "get": {
+        "tags": [
+          "Appointments"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointments/{appointmentId}/decision": {
+      "put": {
+        "tags": [
+          "Appointments"
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDecisionRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDecisionRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Appointments/{appointmentId}/cancel": {
+      "put": {
+        "tags": [
+          "Appointments"
+        ],
+        "parameters": [
+          {
+            "name": "appointmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAppointmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAppointmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelAppointmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/signup": {
       "post": {
         "tags": [
@@ -70,16 +209,86 @@
   },
   "components": {
     "schemas": {
+      "AppointmentDecisionAction": {
+        "enum": [
+          "approve",
+          "decline"
+        ],
+        "type": "string"
+      },
+      "AppointmentDecisionRequest": {
+        "required": [
+          "decision"
+        ],
+        "type": "object",
+        "properties": {
+          "decision": {
+            "$ref": "#/components/schemas/AppointmentDecisionAction"
+          },
+          "doctorNotes": {
+            "maxLength": 500,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CancelAppointmentRequest": {
+        "required": [
+          "doctorNotes"
+        ],
+        "type": "object",
+        "properties": {
+          "doctorNotes": {
+            "maxLength": 500,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateAppointmentRequest": {
+        "required": [
+          "appointmentAtUtc",
+          "doctorUserId",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "doctorUserId": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "appointmentAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "maxLength": 500,
+            "minLength": 5,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginRequest": {
+        "required": [
+          "email",
+          "password",
+          "userType"
+        ],
         "type": "object",
         "properties": {
           "email": {
+            "minLength": 1,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "password": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "userType": {
             "$ref": "#/components/schemas/UserType"
@@ -88,36 +297,51 @@
         "additionalProperties": false
       },
       "SignupRequest": {
+        "required": [
+          "dob",
+          "email",
+          "fullName",
+          "password",
+          "phone",
+          "userType"
+        ],
         "type": "object",
         "properties": {
           "userType": {
             "$ref": "#/components/schemas/UserType"
           },
           "fullName": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 100,
+            "minLength": 3,
+            "pattern": "^[a-zA-Z ]+$",
+            "type": "string"
           },
           "email": {
+            "maxLength": 100,
+            "minLength": 1,
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "phone": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "pattern": "^[0-9]{10}$",
+            "type": "string"
           },
           "dob": {
             "type": "string",
             "format": "date-time"
           },
           "password": {
-            "type": "string",
-            "nullable": true
+            "minLength": 6,
+            "type": "string"
           },
           "emergencyContact": {
+            "pattern": "^$|^[0-9]{10}$",
             "type": "string",
             "nullable": true
           },
           "allergies": {
+            "minLength": 3,
             "type": "string",
             "nullable": true
           },
@@ -130,6 +354,8 @@
             "nullable": true
           },
           "yearsExperience": {
+            "maximum": 60,
+            "minimum": 0,
             "type": "integer",
             "format": "int32",
             "nullable": true

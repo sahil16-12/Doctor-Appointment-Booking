@@ -68,6 +68,11 @@ namespace backend.Mapping
             {
                 string? destinationName = sourceProperty.GetCustomAttribute<MapPropertyAttribute>()?.PropertyName;
 
+                if (string.IsNullOrWhiteSpace(destinationName))
+                {
+                    continue;
+                }
+
                 if (destinationByName.TryGetValue(destinationName, out PropertyInfo? destinationProperty))
                 {
                     object? sourceValue = sourceProperty.GetValue(source);
