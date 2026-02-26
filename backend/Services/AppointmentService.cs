@@ -22,6 +22,21 @@ namespace backend.Services
         /// </summary>
         private readonly IReflectionMapper _reflectionMapper;
 
+        /// <summary>
+        /// Represents in-memory workflow state for appointment creation.
+        /// </summary>
+        private AppointmentCreateWorkflowState? _createAppointmentState;
+
+        /// <summary>
+        /// Represents in-memory workflow state for appointment decision.
+        /// </summary>
+        private AppointmentDecisionWorkflowState? _decideAppointmentState;
+
+        /// <summary>
+        /// Represents in-memory workflow state for appointment cancellation.
+        /// </summary>
+        private AppointmentCancelWorkflowState? _cancelAppointmentState;
+
         #endregion
 
         #region Constructor
@@ -69,51 +84,109 @@ namespace backend.Services
         }
 
         /// <inheritdoc/>
-        public async Task<(AppointmentResponse? response, ErrorResponse? error)> CreateAppointmentAsync(int patientUserId, CreateAppointmentRequest request)
+        public Task<(TBL04? appointment, ErrorResponse? error)> CreateAppointmentPresaveAsync(int patientUserId, CreateAppointmentRequest request)
         {
-            TBL01? patient = await _appointmentRepository.FindUserByIdAsync(patientUserId);
+            try
+            {
+                TBL04 appointment = _reflectionMapper.Map<CreateAppointmentRequest, TBL04>(request);
+                DateTime normalizedAppointmentUtc = DateTime.SpecifyKind(request.AppointmentAtUtc, DateTimeKind.Utc);
+
+                appointment.L04F02 = patientUserId;
+                appointment.L04F04 = normalizedAppointmentUtc;
+                appointment.L04F06 = AppointmentStatus.PENDING;
+                appointment.L04F08 = DateTime.UtcNow;
+                appointment.L04F09 = DateTime.UtcNow;
+
+                _createAppointmentState = new AppointmentCreateWorkflowState
+                {
+                    PatientUserId = patientUserId,
+                    Request = request,
+                    Appointment = appointment
+                };
+
+                return Task.FromResult<(TBL04? appointment, ErrorResponse? error)>((appointment, null));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Create appointment pre-save error: {ex.Message}");
+                return Task.FromResult<(TBL04? appointment, ErrorResponse? error)>((null, new ErrorResponse
+                {
+                    Message = "Server error."
+                }));
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> CreateAppointmentValidateAsync()
+        {
+            if (_createAppointmentState == null)
+            {
+                return new ErrorResponse { Message = "Invalid appointment workflow state." };
+            }
+
+            TBL01? patient = await _appointmentRepository.FindUserByIdAsync(_createAppointmentState.PatientUserId);
             if (patient == null || patient.L01F02 != UserType.PATIENT)
             {
-                return (null, new ErrorResponse { Message = "Patient profile not found." });
+                return new ErrorResponse { Message = "Patient profile not found." };
             }
 
-            bool doctorExists = await _appointmentRepository.DoesDoctorExistAsync(request.DoctorUserId);
+            bool doctorExists = await _appointmentRepository.DoesDoctorExistAsync(_createAppointmentState.Request.DoctorUserId);
             if (!doctorExists)
             {
-                return (null, new ErrorResponse { Message = "Doctor not found." });
+                return new ErrorResponse { Message = "Doctor not found." };
             }
 
-            DateTime normalizedAppointmentUtc = DateTime.SpecifyKind(request.AppointmentAtUtc, DateTimeKind.Utc);
+            DateTime normalizedAppointmentUtc = _createAppointmentState.Appointment.L04F04;
             if (normalizedAppointmentUtc <= DateTime.UtcNow)
             {
-                return (null, new ErrorResponse { Message = "Appointment time must be in the future." });
+                return new ErrorResponse { Message = "Appointment time must be in the future." };
             }
 
             bool isDoctorSlotOccupied = await _appointmentRepository
-                .IsDoctorSlotOccupiedAsync(request.DoctorUserId, normalizedAppointmentUtc);
+                .IsDoctorSlotOccupiedAsync(_createAppointmentState.Request.DoctorUserId, normalizedAppointmentUtc);
             if (isDoctorSlotOccupied)
             {
-                return (null, new ErrorResponse { Message = "Selected doctor slot is not available." });
+                return new ErrorResponse { Message = "Selected doctor slot is not available." };
             }
 
             bool hasDuplicateAppointment = await _appointmentRepository
-                .IsPatientDuplicateAppointmentAsync(patientUserId, request.DoctorUserId, normalizedAppointmentUtc);
+                .IsPatientDuplicateAppointmentAsync(
+                    _createAppointmentState.PatientUserId,
+                    _createAppointmentState.Request.DoctorUserId,
+                    normalizedAppointmentUtc);
             if (hasDuplicateAppointment)
             {
-                return (null, new ErrorResponse { Message = "Duplicate appointment request already exists." });
+                return new ErrorResponse { Message = "Duplicate appointment request already exists." };
             }
 
-            TBL04 appointment = _reflectionMapper.Map<CreateAppointmentRequest, TBL04>(request);
-            appointment.L04F02 = patientUserId;
-            appointment.L04F04 = normalizedAppointmentUtc;
-            appointment.L04F06 = AppointmentStatus.PENDING;
-            appointment.L04F08 = DateTime.UtcNow;
-            appointment.L04F09 = DateTime.UtcNow;
+            return null;
+        }
 
-            await _appointmentRepository.CreateAppointmentAsync(appointment);
+        /// <inheritdoc/>
+        public async Task<(AppointmentResponse? response, ErrorResponse? error)> CreateAppointmentSaveAsync()
+        {
+            try
+            {
+                if (_createAppointmentState == null)
+                {
+                    return (null, new ErrorResponse { Message = "Invalid appointment workflow state." });
+                }
 
-            AppointmentResponse response = _reflectionMapper.Map<TBL04, AppointmentResponse>(appointment);
-            return (response, null);
+                _createAppointmentState.Appointment.L04F08 = DateTime.UtcNow;
+                _createAppointmentState.Appointment.L04F09 = DateTime.UtcNow;
+
+                await _appointmentRepository.CreateAppointmentAsync(_createAppointmentState.Appointment);
+
+                AppointmentResponse response = _reflectionMapper.Map<TBL04, AppointmentResponse>(_createAppointmentState.Appointment);
+                _createAppointmentState = null;
+
+                return (response, null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Create appointment save error: {ex.Message}");
+                return (null, new ErrorResponse { Message = "Server error." });
+            }
         }
 
         /// <inheritdoc/>
@@ -136,61 +209,116 @@ namespace backend.Services
         }
 
         /// <inheritdoc/>
-        public async Task<ErrorResponse?> DecideAppointmentAsync(int doctorUserId, int appointmentId, AppointmentDecisionRequest request)
+        public Task<ErrorResponse?> DecideAppointmentPresaveAsync(int doctorUserId, int appointmentId, AppointmentDecisionRequest request)
         {
-            bool doctorExists = await _appointmentRepository.DoesDoctorExistAsync(doctorUserId);
-            if (!doctorExists)
+            try
             {
-                return new ErrorResponse { Message = "Doctor profile not found." };
+                _decideAppointmentState = new AppointmentDecisionWorkflowState
+                {
+                    DoctorUserId = doctorUserId,
+                    AppointmentId = appointmentId,
+                    Request = request
+                };
+
+                return Task.FromResult<ErrorResponse?>(null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Decide appointment pre-save error: {ex.Message}");
+                return Task.FromResult<ErrorResponse?>(new ErrorResponse { Message = "Server error." });
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> DecideAppointmentValidateAsync()
+        {
+            if (_decideAppointmentState == null)
+            {
+                return new ErrorResponse { Message = "Invalid appointment workflow state." };
             }
 
-            TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
+            (TBL04? appointment, ErrorResponse? commonError) = await ValidateDoctorAndGetOwnedAppointmentAsync(
+                _decideAppointmentState.DoctorUserId,
+                _decideAppointmentState.AppointmentId);
+            if (commonError != null)
             {
-                return new ErrorResponse { Message = "Appointment not found." };
+                return commonError;
             }
 
-            if (appointment.L04F03 != doctorUserId)
-            {
-                return new ErrorResponse { Message = "You are not authorized to modify this appointment." };
-            }
-
-            if (appointment.L04F06 != AppointmentStatus.PENDING)
+            if (appointment!.L04F06 != AppointmentStatus.PENDING)
             {
                 return new ErrorResponse { Message = "Only pending appointments can be approved or declined." };
             }
 
-            appointment.L04F06 = request.Decision == AppointmentDecisionAction.APPROVE
-                ? AppointmentStatus.APPROVED
-                : AppointmentStatus.DECLINED;
-            appointment.L04F07 = request.DoctorNotes;
-            appointment.L04F09 = DateTime.UtcNow;
-
-            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+            _decideAppointmentState.Appointment = appointment;
             return null;
         }
 
         /// <inheritdoc/>
-        public async Task<ErrorResponse?> CancelFutureAppointmentAsync(int doctorUserId, int appointmentId, CancelAppointmentRequest request)
+        public async Task<ErrorResponse?> DecideAppointmentSaveAsync()
         {
-            bool doctorExists = await _appointmentRepository.DoesDoctorExistAsync(doctorUserId);
-            if (!doctorExists)
+            try
             {
-                return new ErrorResponse { Message = "Doctor profile not found." };
+                if (_decideAppointmentState?.Appointment == null)
+                {
+                    return new ErrorResponse { Message = "Invalid appointment workflow state." };
+                }
+
+                _decideAppointmentState.Appointment.L04F06 = _decideAppointmentState.Request.Decision == AppointmentDecisionAction.APPROVE
+                    ? AppointmentStatus.APPROVED
+                    : AppointmentStatus.DECLINED;
+                _decideAppointmentState.Appointment.L04F07 = _decideAppointmentState.Request.DoctorNotes;
+                _decideAppointmentState.Appointment.L04F09 = DateTime.UtcNow;
+
+                await _appointmentRepository.UpdateAppointmentAsync(_decideAppointmentState.Appointment);
+                _decideAppointmentState = null;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Decide appointment save error: {ex.Message}");
+                return new ErrorResponse { Message = "Server error." };
+            }
+        }
+
+        /// <inheritdoc/>
+        public Task<ErrorResponse?> CancelFutureAppointmentPresaveAsync(int doctorUserId, int appointmentId, CancelAppointmentRequest request)
+        {
+            try
+            {
+                _cancelAppointmentState = new AppointmentCancelWorkflowState
+                {
+                    DoctorUserId = doctorUserId,
+                    AppointmentId = appointmentId,
+                    Request = request
+                };
+
+                return Task.FromResult<ErrorResponse?>(null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Cancel appointment pre-save error: {ex.Message}");
+                return Task.FromResult<ErrorResponse?>(new ErrorResponse { Message = "Server error." });
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> CancelFutureAppointmentValidateAsync()
+        {
+            if (_cancelAppointmentState == null)
+            {
+                return new ErrorResponse { Message = "Invalid appointment workflow state." };
             }
 
-            TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(appointmentId);
-            if (appointment == null)
+            (TBL04? appointment, ErrorResponse? commonError) = await ValidateDoctorAndGetOwnedAppointmentAsync(
+                _cancelAppointmentState.DoctorUserId,
+                _cancelAppointmentState.AppointmentId);
+            if (commonError != null)
             {
-                return new ErrorResponse { Message = "Appointment not found." };
+                return commonError;
             }
 
-            if (appointment.L04F03 != doctorUserId)
-            {
-                return new ErrorResponse { Message = "You are not authorized to modify this appointment." };
-            }
-
-            if (appointment.L04F04 <= DateTime.UtcNow)
+            if (appointment!.L04F04 <= DateTime.UtcNow)
             {
                 return new ErrorResponse { Message = "Only future appointments can be cancelled." };
             }
@@ -200,12 +328,67 @@ namespace backend.Services
                 return new ErrorResponse { Message = "Only pending or approved appointments can be cancelled." };
             }
 
-            _reflectionMapper.MapToExisting<CancelAppointmentRequest, TBL04>(request, appointment);
-            appointment.L04F06 = AppointmentStatus.CANCELLED;
-            appointment.L04F09 = DateTime.UtcNow;
-
-            await _appointmentRepository.UpdateAppointmentAsync(appointment);
+            _cancelAppointmentState.Appointment = appointment;
             return null;
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> CancelFutureAppointmentSaveAsync()
+        {
+            try
+            {
+                if (_cancelAppointmentState?.Appointment == null)
+                {
+                    return new ErrorResponse { Message = "Invalid appointment workflow state." };
+                }
+
+                _reflectionMapper.MapToExisting<CancelAppointmentRequest, TBL04>(
+                    _cancelAppointmentState.Request,
+                    _cancelAppointmentState.Appointment);
+                _cancelAppointmentState.Appointment.L04F06 = AppointmentStatus.CANCELLED;
+                _cancelAppointmentState.Appointment.L04F09 = DateTime.UtcNow;
+
+                await _appointmentRepository.UpdateAppointmentAsync(_cancelAppointmentState.Appointment);
+                _cancelAppointmentState = null;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Cancel appointment save error: {ex.Message}");
+                return new ErrorResponse { Message = "Server error." };
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Validates doctor identity and ownership for a target appointment.
+        /// </summary>
+        /// <param name="doctorUserId">The doctor user identifier.</param>
+        /// <param name="appointmentId">The appointment identifier.</param>
+        /// <returns>A tuple containing appointment entity or validation error.</returns>
+        private async Task<(TBL04? appointment, ErrorResponse? error)> ValidateDoctorAndGetOwnedAppointmentAsync(int doctorUserId, int appointmentId)
+        {
+            bool doctorExists = await _appointmentRepository.DoesDoctorExistAsync(doctorUserId);
+            if (!doctorExists)
+            {
+                return (null, new ErrorResponse { Message = "Doctor profile not found." });
+            }
+
+            TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(appointmentId);
+            if (appointment == null)
+            {
+                return (null, new ErrorResponse { Message = "Appointment not found." });
+            }
+
+            if (appointment.L04F03 != doctorUserId)
+            {
+                return (null, new ErrorResponse { Message = "You are not authorized to modify this appointment." });
+            }
+
+            return (appointment, null);
         }
 
         #endregion

@@ -27,6 +27,11 @@ namespace backend.Services
         /// </summary>
         private readonly IReflectionMapper _reflectionMapper;
 
+        /// <summary>
+        /// Represents in-memory workflow state for signup request.
+        /// </summary>
+        private SignupWorkflowState? _signupState;
+
         #endregion
 
         #region Constructor
@@ -49,41 +54,94 @@ namespace backend.Services
         #region Public Methods
 
         /// <inheritdoc/>
-        public async Task<ErrorResponse?> SignupAsync(SignupRequest request)
+        public Task<(TBL01? user, ErrorResponse? error)> PreSaveAsync(SignupRequest request)
         {
             try
             {
-                TBL01? existingUser = await _userRepository.FindUserByEmailAsync(request.Email);
-                if (existingUser != null)
-                {
-                    return new ErrorResponse { Message = "Email already registered." };
-                }
-
-                string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
                 TBL01 user = _reflectionMapper.Map<SignupRequest, TBL01>(request);
-                user.L01F07 = passwordHash;
+                user.L01F07 = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-                int userId = await _userRepository.CreateUserAsync(user);
+                TBL02? patient = null;
+                TBL03? doctor = null;
 
                 if (request.UserType == UserType.PATIENT)
                 {
-                    TBL02 patient = _reflectionMapper.Map<SignupRequest, TBL02>(request);
-                    patient.L02F02 = userId;
-                    await _userRepository.CreatePatientAsync(patient);
+                    patient = _reflectionMapper.Map<SignupRequest, TBL02>(request);
                 }
                 else if (request.UserType == UserType.DOCTOR)
                 {
-                    TBL03 doctor = _reflectionMapper.Map<SignupRequest, TBL03>(request);
-                    doctor.L03F02 = userId;
-                    await _userRepository.CreateDoctorAsync(doctor);
+                    doctor = _reflectionMapper.Map<SignupRequest, TBL03>(request);
+                }
+
+                _signupState = new SignupWorkflowState
+                {
+                    Request = request,
+                    User = user,
+                    Patient = patient,
+                    Doctor = doctor
+                };
+
+                return Task.FromResult<(TBL01? user, ErrorResponse? error)>((user, null));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Signup pre-save error: {ex.Message}");
+                return Task.FromResult<(TBL01? user, ErrorResponse? error)>((null, new ErrorResponse
+                {
+                    Message = "Server error."
+                }));
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> ValidateAsync()
+        {
+            try
+            {
+                if (_signupState == null)
+                {
+                    return new ErrorResponse { Message = "Invalid signup workflow state." };
+                }
+
+                TBL01? existingUser = await _userRepository.FindUserByEmailAsync(_signupState.Request.Email);
+                if (existingUser != null)
+                {
+                    return new ErrorResponse { Message = "Email already registered." };
                 }
 
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Signup error: {ex.Message}");
+                Console.WriteLine($"Signup validate error: {ex.Message}");
+                return new ErrorResponse { Message = "Server error." };
+            }
+        }
+
+        /// <inheritdoc/>
+        public async Task<ErrorResponse?> SaveAsync()
+        {
+            try
+            {
+                int userId = await _userRepository.CreateUserAsync(_signupState.User);
+
+                if (_signupState.Request.UserType == UserType.PATIENT && _signupState.Patient != null)
+                {
+                    _signupState.Patient.L02F02 = userId;
+                    await _userRepository.CreatePatientAsync(_signupState.Patient);
+                }
+                else if (_signupState.Request.UserType == UserType.DOCTOR && _signupState.Doctor != null)
+                {
+                    _signupState.Doctor.L03F02 = userId;
+                    await _userRepository.CreateDoctorAsync(_signupState.Doctor);
+                }
+
+                _signupState = null;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Signup save error: {ex.Message}");
                 return new ErrorResponse { Message = "Server error." };
             }
         }
@@ -154,6 +212,24 @@ namespace backend.Services
                 Console.WriteLine($"Login error: {ex.Message}");
                 return (null, new ErrorResponse { Message = "Server error." });
             }
+        }
+
+        #endregion
+
+        #region Private Types
+
+        /// <summary>
+        /// Represents in-memory state for signup workflow execution.
+        /// </summary>
+        private sealed class SignupWorkflowState
+        {
+            public SignupRequest Request { get; set; } = null!;
+
+            public TBL01 User { get; set; } = null!;
+
+            public TBL02? Patient { get; set; }
+
+            public TBL03? Doctor { get; set; }
         }
 
         #endregion

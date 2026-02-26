@@ -13,9 +13,9 @@ namespace backend.DTOs
         /// <summary>
         /// Gets or sets cancellation note.
         /// </summary>
-        [Required]
-        [MinLength(3)]
-        [MaxLength(500)]
+        [Required(ErrorMessage = "Cancellation note is required.")]
+        [MinLength(3, ErrorMessage = "Cancellation note must be at least 3 characters.")]
+        [MaxLength(500, ErrorMessage = "Cancellation note cannot exceed 500 characters.")]
         [MapProperty("L04F07")]
         public string DoctorNotes { get; set; } = string.Empty;
 

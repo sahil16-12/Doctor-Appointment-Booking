@@ -1,4 +1,5 @@
 using backend.DTOs;
+using backend.Models;
 
 namespace backend.Services
 {
@@ -10,11 +11,23 @@ namespace backend.Services
         #region Public Methods
 
         /// <summary>
-        /// Registers a new user.
+        /// Performs pre-save mapping for signup and stores workflow state.
         /// </summary>
         /// <param name="request">The signup request data.</param>
-        /// <returns>An error response when signup fails; otherwise null.</returns>
-        Task<ErrorResponse?> SignupAsync(SignupRequest request);
+        /// <returns>A tuple containing mapped user POCO or error details.</returns>
+        Task<(TBL01? user, ErrorResponse? error)> PreSaveAsync(SignupRequest request);
+
+        /// <summary>
+        /// Performs signup validations that require data-store access.
+        /// </summary>
+        /// <returns>An error response when validation fails; otherwise null.</returns>
+        Task<ErrorResponse?> ValidateAsync();
+
+        /// <summary>
+        /// Persists signup workflow state to data-store.
+        /// </summary>
+        /// <returns>An error response when persistence fails; otherwise null.</returns>
+        Task<ErrorResponse?> SaveAsync();
 
         /// <summary>
         /// Authenticates an existing user.

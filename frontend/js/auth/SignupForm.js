@@ -47,8 +47,8 @@ export default class SignupForm extends AuthForm {
     }
 
     if (userType === "patient") {
-      payload.emergencyContact = f('input[name="emergencyContact"]');
-      payload.allergies = f('input[name="allergies"]');
+      payload.emergencyContact = f('input[name="emergencyContact"]') || null;
+      payload.allergies = f('input[name="allergies"]') || null;
     } else {
       payload.specialization = f('select[name="specialization"]');
       payload.licenseNumber = f('input[name="licenseNumber"]');

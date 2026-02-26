@@ -50,7 +50,28 @@ namespace backend.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupRequest request)
         {
-            ErrorResponse? error = await _authService.SignupAsync(request);
+            (Models.TBL01? _, ErrorResponse? preSaveError) = await _authService.PreSaveAsync(request);
+            if (preSaveError != null)
+            {
+                return preSaveError.Message switch
+                {
+                    "Server error." => StatusCode(500, preSaveError),
+                    _ => BadRequest(preSaveError)
+                };
+            }
+
+            ErrorResponse? validateError = await _authService.ValidateAsync();
+            if (validateError != null)
+            {
+                return validateError.Message switch
+                {
+                    "Email already registered." => Conflict(validateError),
+                    "Server error." => StatusCode(500, validateError),
+                    _ => BadRequest(validateError)
+                };
+            }
+
+            ErrorResponse? error = await _authService.SaveAsync();
 
             if (error != null)
             {

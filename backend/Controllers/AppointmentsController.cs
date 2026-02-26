@@ -85,13 +85,34 @@ namespace backend.Controllers
                 return Forbid();
             }
 
-            (AppointmentResponse? response, ErrorResponse? error) = await _appointmentService.CreateAppointmentAsync(userId, request);
-            if (error != null)
+            (Models.TBL04? _, ErrorResponse? preSaveError) = await _appointmentService.CreateAppointmentPresaveAsync(userId, request);
+            if (preSaveError != null)
             {
-                return error.Message switch
+                return preSaveError.Message switch
                 {
-                    "Doctor not found." => NotFound(error),
-                    _ => BadRequest(error)
+                    "Server error." => StatusCode(500, preSaveError),
+                    _ => BadRequest(preSaveError)
+                };
+            }
+
+            ErrorResponse? validateError = await _appointmentService.CreateAppointmentValidateAsync();
+            if (validateError != null)
+            {
+                return validateError.Message switch
+                {
+                    "Doctor not found." => NotFound(validateError),
+                    "Server error." => StatusCode(500, validateError),
+                    _ => BadRequest(validateError)
+                };
+            }
+
+            (AppointmentResponse? response, ErrorResponse? saveError) = await _appointmentService.CreateAppointmentSaveAsync();
+            if (saveError != null)
+            {
+                return saveError.Message switch
+                {
+                    "Server error." => StatusCode(500, saveError),
+                    _ => BadRequest(saveError)
                 };
             }
 
@@ -149,14 +170,35 @@ namespace backend.Controllers
                 return Forbid();
             }
 
-            ErrorResponse? error = await _appointmentService.DecideAppointmentAsync(userId, appointmentId, request);
-            if (error != null)
+            ErrorResponse? preSaveError = await _appointmentService.DecideAppointmentPresaveAsync(userId, appointmentId, request);
+            if (preSaveError != null)
             {
-                return error.Message switch
+                return preSaveError.Message switch
                 {
-                    "Appointment not found." => NotFound(error),
+                    "Server error." => StatusCode(500, preSaveError),
+                    _ => BadRequest(preSaveError)
+                };
+            }
+
+            ErrorResponse? validateError = await _appointmentService.DecideAppointmentValidateAsync();
+            if (validateError != null)
+            {
+                return validateError.Message switch
+                {
+                    "Appointment not found." => NotFound(validateError),
                     "You are not authorized to modify this appointment." => Forbid(),
-                    _ => BadRequest(error)
+                    "Server error." => StatusCode(500, validateError),
+                    _ => BadRequest(validateError)
+                };
+            }
+
+            ErrorResponse? saveError = await _appointmentService.DecideAppointmentSaveAsync();
+            if (saveError != null)
+            {
+                return saveError.Message switch
+                {
+                    "Server error." => StatusCode(500, saveError),
+                    _ => BadRequest(saveError)
                 };
             }
 
@@ -183,14 +225,35 @@ namespace backend.Controllers
                 return Forbid();
             }
 
-            ErrorResponse? error = await _appointmentService.CancelFutureAppointmentAsync(userId, appointmentId, request);
-            if (error != null)
+            ErrorResponse? preSaveError = await _appointmentService.CancelFutureAppointmentPresaveAsync(userId, appointmentId, request);
+            if (preSaveError != null)
             {
-                return error.Message switch
+                return preSaveError.Message switch
                 {
-                    "Appointment not found." => NotFound(error),
+                    "Server error." => StatusCode(500, preSaveError),
+                    _ => BadRequest(preSaveError)
+                };
+            }
+
+            ErrorResponse? validateError = await _appointmentService.CancelFutureAppointmentValidateAsync();
+            if (validateError != null)
+            {
+                return validateError.Message switch
+                {
+                    "Appointment not found." => NotFound(validateError),
                     "You are not authorized to modify this appointment." => Forbid(),
-                    _ => BadRequest(error)
+                    "Server error." => StatusCode(500, validateError),
+                    _ => BadRequest(validateError)
+                };
+            }
+
+            ErrorResponse? saveError = await _appointmentService.CancelFutureAppointmentSaveAsync();
+            if (saveError != null)
+            {
+                return saveError.Message switch
+                {
+                    "Server error." => StatusCode(500, saveError),
+                    _ => BadRequest(saveError)
                 };
             }
 

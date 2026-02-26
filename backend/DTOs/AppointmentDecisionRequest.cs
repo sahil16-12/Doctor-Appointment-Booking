@@ -1,3 +1,4 @@
+using backend.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace backend.DTOs
@@ -12,32 +13,16 @@ namespace backend.DTOs
         /// <summary>
         /// Gets or sets decision action.
         /// </summary>
-        [Required]
-        [EnumDataType(typeof(AppointmentDecisionAction))]
+        [Required(ErrorMessage = "Decision is required.")]
+        [EnumDataType(typeof(AppointmentDecisionAction), ErrorMessage = "Please select a valid decision.")]
         public AppointmentDecisionAction Decision { get; set; }
 
         /// <summary>
         /// Gets or sets optional doctor note.
         /// </summary>
-        [MaxLength(500)]
+        [MaxLength(500, ErrorMessage = "Doctor notes cannot exceed 500 characters.")]
         public string? DoctorNotes { get; set; }
 
         #endregion
-    }
-
-    /// <summary>
-    /// Represents doctor decision types for pending appointment.
-    /// </summary>
-    public enum AppointmentDecisionAction
-    {
-        /// <summary>
-        /// Represents approve action.
-        /// </summary>
-        APPROVE,
-
-        /// <summary>
-        /// Represents decline action.
-        /// </summary>
-        DECLINE
     }
 }
