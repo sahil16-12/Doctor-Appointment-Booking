@@ -49,6 +49,7 @@ namespace backend.Mapping
                 .Where(property => property.CanWrite)
                 .ToDictionary(property => property.Name, StringComparer.OrdinalIgnoreCase);
 
+            //Destination driven mapping
             foreach (PropertyInfo destinationProperty in destinationProperties.Where(property => property.CanWrite))
             {
                 string sourceName = destinationProperty.GetCustomAttribute<MapPropertyAttribute>()?.PropertyName
@@ -64,6 +65,7 @@ namespace backend.Mapping
                 }
             }
 
+            //Source driven mapping 
             foreach (PropertyInfo sourceProperty in sourceProperties.Where(property => property.CanRead))
             {
                 string? destinationName = sourceProperty.GetCustomAttribute<MapPropertyAttribute>()?.PropertyName;

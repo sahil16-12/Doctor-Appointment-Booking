@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using backend.DTOs;
 using backend.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace backend.Controllers
 {
@@ -55,6 +56,8 @@ namespace backend.Controllers
         /// </summary>
         /// <param name="request">The login request payload.</param>
         /// <returns>An HTTP response containing token and profile on success.</returns>
+
+        [EnableRateLimiting("login-policy")]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
