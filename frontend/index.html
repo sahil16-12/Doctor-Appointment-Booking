@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,103 +7,294 @@
 
     <link rel="stylesheet" href="css/globals.css" />
     <link rel="stylesheet" href="css/landing.css" />
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
   </head>
   <body class="landing-page">
-    <header data-layout="header"></header>
+    <!-- Background Effects -->
+    <div class="bg-effects">
+      <div class="radial-gradient"></div>
+      <div class="grid-pattern"></div>
+    </div>
 
-    <main class="hero">
-      <div class="hero-content">
-        <h1>Professional Healthcare at Your Fingertips</h1>
-        <p>
-          Connect with qualified doctors, book appointments instantly, and
-          manage your health records securely. No more waiting rooms or phone
-          calls - healthcare made simple.
-        </p>
-        <a href="pages/signup.html" class="cta-btn">Get Started</a>
-      </div>
-    </main>
+    <div class="content-wrapper">
+      <header data-layout="header"></header>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <div class="features-container">
-        <h2 class="features-title">Why Choose Sehat?</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <h3>Find Specialists</h3>
-            <p>
-              Search doctors by specialty, location, and availability. Book with
-              verified professionals.
-            </p>
-          </div>
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-container">
+          <div class="badge">Healthcare Made Simple & Accessible</div>
 
-          <div class="feature-card">
-            <h3>Instant Booking</h3>
-            <p>
-              Real-time appointment scheduling with immediate confirmation. No
-              waiting, no hassle.
-            </p>
-          </div>
+          <h1 class="hero-title">
+            <span class="title-line-1">Your Health, Your Priority</span>
+            <br />
+            <span class="title-line-2">
+              Book Appointments
+              <span class="typing-text" id="typingText"></span>
+            </span>
+          </h1>
 
-          <div class="feature-card">
-            <h3>Secure Records</h3>
-            <p>
-              Your medical history and prescriptions stored safely in one
-              convenient place.
-            </p>
+          <p class="hero-description">
+            Connect with qualified healthcare professionals instantly. Book
+            appointments with top doctors in seconds. Experience hassle-free
+            healthcare management with our intelligent platform.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="cta-buttons">
+            <a href="pages/signup.html" class="btn btn-primary">
+              Book Appointment Now
+              <i data-lucide="arrow-right" class="btn-icon"></i>
+            </a>
+            <a href="pages/login.html" class="btn btn-outline">
+              <i data-lucide="user" class="btn-icon-left"></i>
+              Patient Login
+            </a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- How It Works -->
-    <section class="how-it-works-section">
-      <div class="how-it-works-container">
-        <h2 class="how-it-works-title">How It Works</h2>
-        <div class="steps-grid">
-          <div class="step-item">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Search</h3>
-            <p class="step-description">
-              Find doctors by specialty or location
+      <!-- Interactive Features Demo Section -->
+      <section class="features-demo-section">
+        <div class="section-container">
+          <div class="section-header">
+            <h2 class="section-title">🏥 Why Choose Sehat?</h2>
+            <p class="section-subtitle">
+              Everything you need for seamless healthcare management
             </p>
           </div>
 
-          <div class="step-item">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Book</h3>
-            <p class="step-description">
-              Choose time slot and confirm appointment
-            </p>
-          </div>
+          <div class="features-grid-layout">
+            <!-- Feature Selection -->
+            <div class="features-list">
+              <div class="feature-item active" data-feature="0">
+                <div class="feature-icon-wrapper">
+                  <i data-lucide="calendar-check" class="feature-icon"></i>
+                </div>
+                <div class="feature-content">
+                  <h4 class="feature-title">
+                    Quick Appointment Booking
+                    <span class="live-badge">FEATURED</span>
+                  </h4>
+                  <p class="feature-desc">
+                    Book appointments with verified doctors in seconds
+                  </p>
+                  <div class="feature-points">
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>View real-time doctor availability</span>
+                    </div>
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>Instant booking confirmation</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <div class="step-item">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Meet</h3>
-            <p class="step-description">
-              Attend consultation and get treatment
-            </p>
+              <div class="feature-item" data-feature="1">
+                <div class="feature-icon-wrapper">
+                  <i data-lucide="user-check" class="feature-icon"></i>
+                </div>
+                <div class="feature-content">
+                  <h4 class="feature-title">Verified Specialists</h4>
+                  <p class="feature-desc">
+                    Access top healthcare professionals across specialties
+                  </p>
+                  <div class="feature-points">
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>500+ qualified doctors</span>
+                    </div>
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>Read verified patient reviews</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="feature-item" data-feature="2">
+                <div class="feature-icon-wrapper">
+                  <i data-lucide="bell-ring" class="feature-icon"></i>
+                </div>
+                <div class="feature-content">
+                  <h4 class="feature-title">Smart Reminders</h4>
+                  <p class="feature-desc">
+                    Never miss an appointment with automated alerts
+                  </p>
+                  <div class="feature-points">
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>SMS and Email notifications</span>
+                    </div>
+                    <div class="feature-point">
+                      <i data-lucide="check-circle" class="point-icon"></i>
+                      <span>Prescription reminders</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demo Display -->
+            <div class="demo-display">
+              <div class="demo-card">
+                <div class="demo-header">
+                  <h3 class="demo-title" id="demoTitle">
+                    Quick Appointment Booking
+                  </h3>
+                  <span class="demo-badge">FEATURED</span>
+                </div>
+
+                <p class="demo-description" id="demoDescription">
+                  Book appointments seamlessly with real-time doctor
+                  availability
+                </p>
+
+                <!-- Demo Content Container -->
+                <div class="demo-content" id="demoContent">
+                  <!-- Dynamic content will be injected here -->
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="cta-container">
-        <h2 class="cta-title">Ready to Get Started?</h2>
-        <p class="cta-description">
-          Join thousands of patients who trust Sehat for their healthcare needs.
-        </p>
-        <a href="pages/signup.html" class="cta-btn">Create Free Account</a>
-      </div>
-    </section>
+      <!-- How It Works Section -->
+      <section class="how-it-works-section">
+        <div class="section-container">
+          <div class="section-header">
+            <h2 class="section-title">How Sehat Works</h2>
+            <p class="section-subtitle">
+              Book your appointment in just 4 simple steps
+            </p>
+          </div>
 
-    <footer data-layout="footer"></footer>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">01</div>
+              <div class="step-icon-wrapper">
+                <i data-lucide="user-plus" class="step-icon"></i>
+              </div>
+              <h3 class="step-title">Create Your Profile</h3>
+              <p class="step-desc">
+                Sign up with basic details and medical history
+              </p>
+              <div class="step-arrow">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </div>
 
-    <script type="module">
-      import { initLayout } from "./js/layout.js";
-      initLayout("landing");
+            <div class="step-card">
+              <div class="step-number">02</div>
+              <div class="step-icon-wrapper">
+                <i data-lucide="stethoscope" class="step-icon"></i>
+              </div>
+              <h3 class="step-title">Choose Your Doctor</h3>
+              <p class="step-desc">
+                Browse specialists by expertise and ratings
+              </p>
+              <div class="step-arrow">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">03</div>
+              <div class="step-icon-wrapper">
+                <i data-lucide="calendar-days" class="step-icon"></i>
+              </div>
+              <h3 class="step-title">Select Time Slot</h3>
+              <p class="step-desc">
+                Pick your preferred date and time instantly
+              </p>
+              <div class="step-arrow">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">04</div>
+              <div class="step-icon-wrapper">
+                <i data-lucide="check-circle-2" class="step-icon"></i>
+              </div>
+              <h3 class="step-title">Get Confirmation</h3>
+              <p class="step-desc">
+                Receive instant booking confirmation and reminders
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="testimonials-section">
+        <div class="testimonials-container">
+          <h2 class="section-title">Trusted by Thousands of Patients</h2>
+
+          <div class="testimonial-card">
+            <div class="stars">
+              <i data-lucide="star" class="star-icon filled"></i>
+              <i data-lucide="star" class="star-icon filled"></i>
+              <i data-lucide="star" class="star-icon filled"></i>
+              <i data-lucide="star" class="star-icon filled"></i>
+              <i data-lucide="star" class="star-icon filled"></i>
+            </div>
+            <blockquote class="testimonial-quote">
+              "Sehat made booking my doctor's appointment so easy! I found a
+              great cardiologist nearby, booked an appointment in minutes, and
+              received timely reminders. Highly recommended!"
+            </blockquote>
+            <div class="testimonial-author">
+              <p class="author-name">Rajesh Kumar</p>
+              <p class="author-title">Patient, Delhi</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="cta-container">
+          <h2 class="cta-title">Ready to Experience Better Healthcare?</h2>
+          <p class="cta-description">
+            Join thousands of satisfied patients who trust Sehat for their
+            healthcare needs
+          </p>
+
+          <div class="cta-buttons-group">
+            <a href="pages/signup.html" class="btn btn-primary btn-large">
+              Book Your First Appointment
+              <i data-lucide="arrow-right" class="btn-icon"></i>
+            </a>
+            <a href="pages/login.html" class="btn btn-outline btn-large">
+              Sign In
+            </a>
+          </div>
+
+          <p class="cta-note">
+            No hidden fees • Verified doctors • Secure platform
+          </p>
+        </div>
+      </section>
+
+      <footer data-layout="footer"></footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="js/layout.js"></script>
+    <script src="js/landing-animations.js"></script>
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Initialize layout
+      import("./js/layout.js").then((module) => {
+        module.initLayout("landing");
+      });
     </script>
   </body>
 </html>

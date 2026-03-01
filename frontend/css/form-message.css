@@ -1,62 +1,121 @@
-/* Toast Notification Container */
+/* ========================================
+   TOAST NOTIFICATIONS - GLASSY THEME
+   ======================================== */
+
+/* Toast Container */
 #toastContainer {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
+  top: 90px;
+  right: 24px;
+  z-index: 99999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 400px;
+  gap: 12px;
+  max-width: 420px;
+  pointer-events: none;
 }
 
 /* Toast Card */
 .toast-message {
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.9375rem;
   font-weight: 500;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   gap: 12px;
-  backdrop-filter: blur(10px);
-  animation: slideInRight 0.4s ease-out;
-  min-width: 300px;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 320px;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
 }
 
+/* Success Toast - Green Glassy */
 .toast-message.success {
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  color: #155724;
-  border-left: 4px solid #28a745;
-}
-
-.toast-message.error {
-  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-  color: #721c24;
-  border-left: 4px solid #dc3545;
-}
-
-.toast-message::before {
-  content: '';
-  font-size: 1.5rem;
-  flex-shrink: 0;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #ffffff;
 }
 
 .toast-message.success::before {
-  content: '✓';
-  color: #28a745;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #10b981, #059669);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+}
+
+/* Error Toast - Red Glassy */
+.toast-message.error {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ffffff;
 }
 
 .toast-message.error::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #ef4444, #dc2626);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+/* Toast Icon */
+.toast-message::after {
+  content: '';
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  order: -1;
+  margin-left: 8px;
+}
+
+.toast-message.success::after {
+  content: '✓';
+  background: rgba(16, 185, 129, 0.25);
+  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  color: #10b981;
+  line-height: 24px;
+  text-align: center;
+}
+
+.toast-message.error::after {
   content: '✕';
-  color: #dc3545;
+  background: rgba(239, 68, 68, 0.25);
+  border: 1.5px solid rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+  line-height: 24px;
+  text-align: center;
+}
+
+/* Toast Content */
+.toast-message span {
+  flex: 1;
+  letter-spacing: 0.01em;
 }
 
 /* Slide in animation */
 @keyframes slideInRight {
   from {
-    transform: translateX(400px);
+    transform: translateX(450px);
     opacity: 0;
   }
   to {
@@ -69,23 +128,34 @@
 @keyframes fadeOut {
   to {
     opacity: 0;
-    transform: translateX(400px);
+    transform: translateX(450px) scale(0.95);
   }
 }
 
 .toast-message.fade-out {
-  animation: fadeOut 0.3s ease-in forwards;
+  animation: fadeOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* Hover effect */
+.toast-message:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   #toastContainer {
-    right: 10px;
-    left: 10px;
+    top: 80px;
+    right: 16px;
+    left: 16px;
     max-width: none;
   }
   
   .toast-message {
     min-width: auto;
+    font-size: 0.875rem;
+    padding: 14px 16px;
   }
 }
+

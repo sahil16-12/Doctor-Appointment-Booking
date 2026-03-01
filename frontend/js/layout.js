@@ -28,40 +28,35 @@ export async function initLayout(pageType) {
 
   const results = await Promise.allSettled([
     loadHTML(`${basePath}components/header.html`),
-    loadHTML(`${basePath}components/footer.html`)
+    loadHTML(`${basePath}components/footer.html`),
   ]);
 
-  const headerHTML =
-    results[0].status === "fulfilled" ? results[0].value : "";
+  const headerHTML = results[0].status === "fulfilled" ? results[0].value : "";
 
-  const footerHTML =
-    results[1].status === "fulfilled" ? results[1].value : "";
-
-
+  const footerHTML = results[1].status === "fulfilled" ? results[1].value : "";
 
   $header.html(
     headerHTML
-      ? headerHTML.replace("{{BASE_PATH}}", basePath)
-      : "<div class='navbar'>Sehat</div>"
+      ? headerHTML.replace(/{{BASE_PATH}}/g, basePath)
+      : "<div class='navbar'>Sehat</div>",
   );
 
   $footer.html(
     footerHTML
       ? footerHTML.replace("{{YEAR}}", new Date().getFullYear())
-      : "<p>&copy; Sehat</p>"
+      : "<p>&copy; Sehat</p>",
   );
 
   const authComponent = getAuthComponent(pageType);
   if (authComponent) {
     const authHTML = await loadHTML(
-      `${basePath}components/auth/${authComponent}.html`
+      `${basePath}components/auth/${authComponent}.html`,
     );
-  
-    $header.find("[data-auth-links]").html(
-      authHTML.replace(/{{BASE_PATH}}/g, basePath)
-    );
+
+    $header
+      .find("[data-auth-links]")
+      .html(authHTML.replace(/{{BASE_PATH}}/g, basePath));
   }
-  
 
   $("#logoutBtn").on("click", () => {
     sessionStorage.clear();

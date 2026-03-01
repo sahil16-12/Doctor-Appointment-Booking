@@ -17,15 +17,19 @@ export default class AuthService {
     const token = this.getToken();
     const profile = this.getProfile();
 
+    // Normalize role comparison - backend returns uppercase (PATIENT/DOCTOR)
+    const normalizedRole = role?.toUpperCase();
+    const profileUserType = profile?.userType?.toUpperCase();
+
     console.log("Auth Debug:", {
       token: !!token,
       profile,
-      role,
-      profileUserType: profile?.userType,
-      match: profile?.userType === role,
+      role: normalizedRole,
+      profileUserType,
+      match: profileUserType === normalizedRole,
     });
 
-    if (!token || !profile || profile.userType !== role) {
+    if (!token || !profile || profileUserType !== normalizedRole) {
       console.log("Auth failed, redirecting to:", redirectPath);
       window.location.href = redirectPath;
       return null;

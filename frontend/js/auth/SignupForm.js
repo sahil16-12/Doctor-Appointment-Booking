@@ -6,17 +6,8 @@ export default class SignupForm extends AuthForm {
     this.$patient = $("#patientFields");
     this.$doctor = $("#doctorFields");
     this.$doctorRequired = this.$doctor.find("select, input");
-    this.bindUserTypeSwitch();
-    this.updateConditionalFields(
-      this.$form.find('input[name="userType"]:checked').val(),
-    );
-  }
-
-  bindUserTypeSwitch() {
-    this.$form.find('input[name="userType"]').on("change", (e) => {
-      const userType = e.target.value;
-      this.updateConditionalFields(userType);
-    });
+    this.userTypeInput = document.getElementById("userTypeInput");
+    this.updateConditionalFields(this.userTypeInput?.value || "patient");
   }
 
   updateConditionalFields(userType) {
@@ -29,14 +20,54 @@ export default class SignupForm extends AuthForm {
 
   async buildPayload() {
     const f = (s) => this.$form.find(s).val()?.trim() ?? "";
-    const userType = this.$form.find('input[name="userType"]:checked').val();
+    const userType =
+      this.userTypeInput?.value ||
+      this.$form.find('input[name="userType"]').val();
+
+    // Helper to extract only digits from phone numbers
+    const extractDigits = (str) => str.replace(/\D/g, "");
+
+    const phoneRaw = f('input[name="phone"]');
+    const phoneDigits = extractDigits(phoneRaw);
+
+    // Validate phone number
+    if (phoneDigits.length !== 10) {
+      this.toast.error("Phone number must be exactly 10 digits");
+      throw "Validation";
+    }
+
+    // Validate email format
+    const email = f('input[name="email"]');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.toast.error("Please enter a valid email address");
+      throw "Validation";
+    }
+
+    // Validate full name
+    const fullName = f('input[name="fullName"]');
+    if (fullName.length < 3) {
+      this.toast.error("Full name must be at least 3 characters");
+      throw "Validation";
+    }
+    if (!/^[a-zA-Z ]+$/.test(fullName)) {
+      this.toast.error("Full name can only contain letters and spaces");
+      throw "Validation";
+    }
+
+    // Validate date of birth
+    const dobStr = f('input[name="dob"]');
+    if (!dobStr) {
+      this.toast.error("Date of birth is required");
+      throw "Validation";
+    }
 
     const payload = {
       userType: userType.toUpperCase(), // Convert to PATIENT or DOCTOR
-      fullName: f('input[name="fullName"]'),
-      email: f('input[name="email"]'),
-      phone: f('input[name="phone"]'),
-      dob: f('input[name="dob"]'),
+      fullName: fullName,
+      email: email,
+      phone: phoneDigits, // Send only digits
+      dob: dobStr,
       password: f('input[name="password"]'),
     };
 
@@ -46,14 +77,59 @@ export default class SignupForm extends AuthForm {
       throw "Validation";
     }
 
+    // Validate password length
+    if (payload.password.length < 6) {
+      this.toast.error("Password must be at least 6 characters long");
+      throw "Validation";
+    }
+
     if (userType === "patient") {
-      payload.emergencyContact = f('input[name="emergencyContact"]') || null;
-      payload.allergies = f('input[name="allergies"]') || null;
+      const emergencyRaw = f('input[name="emergencyContact"]');
+      const emergencyDigits = emergencyRaw ? extractDigits(emergencyRaw) : "";
+
+      // Validate emergency contact if provided
+      if (emergencyDigits && emergencyDigits.length !== 10) {
+        this.toast.error("Emergency contact must be exactly 10 digits");
+        throw "Validation";
+      }
+
+      payload.emergencyContact = emergencyDigits || null;
+
+      const allergies = f('input[name="allergies"]');
+      // Validate allergies if provided - must be at least 3 characters
+      if (allergies && allergies.length < 3) {
+        this.toast.error("Allergies description must be at least 3 characters");
+        throw "Validation";
+      }
+      payload.allergies = allergies || null;
     } else {
-      payload.specialization = f('select[name="specialization"]');
-      payload.licenseNumber = f('input[name="licenseNumber"]');
+      const specialization = f('select[name="specialization"]');
+      const licenseNumber = f('input[name="licenseNumber"]');
       const yearsStr = f('input[name="yearsExperience"]');
-      payload.yearsExperience = yearsStr ? parseInt(yearsStr, 10) : null;
+
+      // Validate required doctor fields
+      if (!specialization) {
+        this.toast.error("Please select a specialization");
+        throw "Validation";
+      }
+      if (!licenseNumber) {
+        this.toast.error("License number is required");
+        throw "Validation";
+      }
+      if (!yearsStr) {
+        this.toast.error("Years of experience is required");
+        throw "Validation";
+      }
+
+      const years = parseInt(yearsStr, 10);
+      if (isNaN(years) || years < 0 || years > 60) {
+        this.toast.error("Years of experience must be between 0 and 60");
+        throw "Validation";
+      }
+
+      payload.specialization = specialization;
+      payload.licenseNumber = licenseNumber;
+      payload.yearsExperience = years;
     }
 
     return payload;
@@ -61,13 +137,34 @@ export default class SignupForm extends AuthForm {
 
   async submit(payload) {
     try {
-      console.log("Signup Payload:", payload);
-      await this.api.post("/api/auth/signup", payload);
-      this.toast.success("Signup successful! Redirecting...");
-      setTimeout(() => (window.location.href = "login.html"), 1500);
+      console.log("📝 Attempting signup with payload:", {
+        ...payload,
+        password: "***",
+      });
+
+      const { data } = await this.api.post("/api/auth/signup", payload);
+
+      console.log("✅ Signup successful! Response:", data);
+
+      this.toast.success(
+        data.message || "Signup successful! Redirecting to login...",
+      );
+
+      setTimeout(() => (window.location.href = "../pages/login.html"), 1500);
     } catch (err) {
-      console.error("Signup Error:", err);
-      this.toast.error(err.message);
+      console.error("❌ Signup error details:", {
+        status: err.status,
+        message: err.message,
+        originalError: err.originalError,
+      });
+
+      // Show the actual error message from the server
+      const errorMsg = err.message || "Signup failed. Please try again.";
+      console.log("🚨 Showing error toast:", errorMsg);
+      this.toast.error(errorMsg);
+
+      // Re-throw to prevent any unintended behavior
+      throw err;
     }
   }
 }

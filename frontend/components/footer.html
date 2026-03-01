@@ -1,4 +1,64 @@
+<style>
+  footer {
+    position: relative;
+  }
+
+  footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .footer-inner {
+    background: transparent;
+    border: none;
+    padding: 48px 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    margin-top: 60px;
+    z-index: 1;
+  }
+
+  .footer-inner p {
+    font-size: 0.875rem;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-inner a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
+  }
+
+  .footer-inner a:hover {
+    color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    .footer-inner {
+      padding: 36px 16px;
+      margin-top: 40px;
+    }
+  }
+</style>
+
 <div class="footer-inner">
-    <p>&copy; <span data-year></span> Sehat. All rights reserved.</p>
-  </div>
-  
+  <p>&copy; <span data-year"></span> Sehat. All rights reserved. Made with 💙 for better healthcare.</p>
+</div>
+
+<script>
+  // Set current year
+  const yearSpan = document.querySelector('[data-year]');
+  if (yearSpan) {
+    yearSpan.textContent = new Date().getFullYear();
+  }
+</script>

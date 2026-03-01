@@ -4,120 +4,300 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - Sehat</title>
-
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/lucide-static@latest/font/lucide.css"
+    />
     <link rel="stylesheet" href="../css/globals.css" />
     <link rel="stylesheet" href="../css/auth.css" />
     <link rel="stylesheet" href="../css/form-message.css" />
   </head>
-  <body class="auth-page">
+  <body class="signup-page">
     <div id="toastContainer"></div>
+
+    <!-- Background Effects -->
+    <div class="bg-effects">
+      <div class="radial-gradient"></div>
+      <div class="grid-pattern"></div>
+    </div>
+
     <header data-layout="header"></header>
 
-    <main class="auth-main center">
-      <form class="auth-box" id="signupForm">
-        <h2>Create Your Account</h2>
-        <p>Join Sehat and start booking appointments</p>
-
-        <!-- User Type Selection  -->
-        <div class="user-type-selection">
-          <label class="user-type-label">
-            <input type="radio" name="userType" value="patient" checked />
-            <span class="user-type-span">Patient</span>
-          </label>
-          <label class="user-type-label">
-            <input type="radio" name="userType" value="doctor" />
-            <span class="user-type-span">Doctor</span>
-          </label>
+    <main class="signup-main">
+      <div class="signup-container">
+        <!-- Header -->
+        <div class="signup-header">
+          <div class="badge">
+            <i data-lucide="heart-pulse" class="icon-sm"></i>
+            Join Sehat
+          </div>
+          <h1 class="signup-title">Create Your Account</h1>
+          <p class="signup-subtitle">
+            Join thousands of people managing their healthcare appointments
+            seamlessly
+          </p>
         </div>
 
-        <input type="text" name="fullName" placeholder="Full Name*" required />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Address*"
-          required
-        />
-        <input type="tel" name="phone" placeholder="Phone Number*" required />
-        <input type="date" name="dob" placeholder="Date of Birth*" required />
-
-        <!-- Patient specific fields -->
-        <div id="patientFields">
-          <input
-            type="text"
-            name="emergencyContact"
-            placeholder="Emergency Contact (Optional)"
-          />
-          <input
-            type="text"
-            name="allergies"
-            placeholder="Known Allergies (Optional)"
-          />
+        <!-- User Type Toggle -->
+        <div class="user-type-toggle-wrapper">
+          <div class="user-type-toggle">
+            <button type="button" class="toggle-btn active" data-type="patient">
+              <i data-lucide="user" class="icon-sm"></i>
+              Patient
+            </button>
+            <button type="button" class="toggle-btn" data-type="doctor">
+              <i data-lucide="stethoscope" class="icon-sm"></i>
+              Doctor
+            </button>
+          </div>
         </div>
 
-        <!-- Doctor specific fields -->
-        <div id="doctorFields" class="doctor-fields">
-          <select name="specialization" required disabled>
-            <option value="">Select Specialization*</option>
-            <option value="general">General Practice</option>
-            <option value="cardiology">Cardiology</option>
-            <option value="dermatology">Dermatology</option>
-            <option value="pediatrics">Pediatrics</option>
-            <option value="orthopedics">Orthopedics</option>
-          </select>
-          <input
-            type="text"
-            name="licenseNumber"
-            placeholder="Medical License Number*"
-            required
-            disabled
-          />
-          <input
-            type="number"
-            name="yearsExperience"
-            placeholder="Years of Experience*"
-            min="0"
-            required
-            disabled
-          />
+        <!-- Registration Form Card -->
+        <div class="signup-card">
+          <form id="signupForm" class="signup-form">
+            <div class="form-header">
+              <h2 class="form-title">
+                <i data-lucide="user-plus" class="icon-md"></i>
+                <span id="formTitleText">Patient Registration</span>
+              </h2>
+              <p class="form-description" id="formDescText">
+                Create your account to start booking appointments with top
+                doctors
+              </p>
+            </div>
+
+            <!-- Hidden User Type -->
+            <input
+              type="hidden"
+              name="userType"
+              value="patient"
+              id="userTypeInput"
+            />
+
+            <!-- Basic Information Section -->
+            <div class="form-section">
+              <h3 class="section-title">
+                <i data-lucide="user" class="icon-sm"></i>
+                Basic Information
+              </h3>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="fullName" class="form-label">Full Name *</label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    class="form-input"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="email" class="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-input"
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="phone" class="form-label">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-input"
+                    placeholder="1234567890 (10 digits)"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="dob" class="form-label">Date of Birth *</label>
+                  <input
+                    type="date"
+                    id="dob"
+                    name="dob"
+                    class="form-input"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="password" class="form-label">Password *</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-input"
+                    placeholder="Create a strong password"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="confirmPassword" class="form-label"
+                    >Confirm Password *</label
+                  >
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    class="form-input"
+                    placeholder="Re-enter your password"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Patient Specific Fields -->
+            <div id="patientFields" class="form-section">
+              <h3 class="section-title">
+                <i data-lucide="heart-pulse" class="icon-sm"></i>
+                Medical Information (Optional)
+              </h3>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="emergencyContact" class="form-label"
+                    >Emergency Contact</label
+                  >
+                  <input
+                    type="text"
+                    id="emergencyContact"
+                    name="emergencyContact"
+                    class="form-input"
+                    placeholder="1234567890 (10 digits, optional)"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="allergies" class="form-label"
+                    >Known Allergies</label
+                  >
+                  <input
+                    type="text"
+                    id="allergies"
+                    name="allergies"
+                    class="form-input"
+                    placeholder="List any known allergies"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Doctor Specific Fields -->
+            <div id="doctorFields" class="form-section" style="display: none">
+              <h3 class="section-title">
+                <i data-lucide="briefcase-medical" class="icon-sm"></i>
+                Professional Information
+              </h3>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="specialization" class="form-label"
+                    >Specialization *</label
+                  >
+                  <select
+                    id="specialization"
+                    name="specialization"
+                    class="form-select"
+                  >
+                    <option value="">Select Specialization</option>
+                    <option value="general">General Practice</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="dermatology">Dermatology</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="psychiatry">Psychiatry</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="licenseNumber" class="form-label"
+                    >Medical License Number *</label
+                  >
+                  <input
+                    type="text"
+                    id="licenseNumber"
+                    name="licenseNumber"
+                    class="form-input"
+                    placeholder="Enter license number"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="yearsExperience" class="form-label"
+                  >Years of Experience *</label
+                >
+                <input
+                  type="number"
+                  id="yearsExperience"
+                  name="yearsExperience"
+                  class="form-input"
+                  placeholder="Years in practice"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <!-- Terms & Submit -->
+            <div class="form-section border-top">
+              <label class="terms-checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  name="termsAccepted"
+                  class="custom-checkbox"
+                  required
+                />
+                <span class="checkbox-label">
+                  I agree to the
+                  <a href="#" class="link">Terms of Service</a> and
+                  <a href="#" class="link">Privacy Policy</a> *
+                </span>
+              </label>
+
+              <button
+                type="submit"
+                class="submit-btn"
+                id="signupSubmitBtn"
+                disabled
+              >
+                <i data-lucide="check-circle" class="icon-sm"></i>
+                Create Account
+              </button>
+
+              <p class="switch-link">
+                Already have an account?
+                <a href="login.html" class="link-primary">Sign in here</a>
+              </p>
+            </div>
+          </form>
         </div>
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password*"
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password*"
-          required
-        />
-
-        <label class="terms-container">
-          <input
-            type="checkbox"
-            name="termsAccepted"
-            required
-            class="terms-checkbox"
-          />
-          <span class="terms-label"
-            >I agree to the Terms of Service and Privacy Policy*</span
-          >
-        </label>
-
-        <button type="submit">Create Account</button>
-
-        <p class="switch">
-          Already have an account?
-          <a href="login.html">Login</a>
-        </p>
-      </form>
+      </div>
     </main>
 
     <footer data-layout="footer"></footer>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script type="module" src="../js/signup.js"></script>
   </body>
 </html>
