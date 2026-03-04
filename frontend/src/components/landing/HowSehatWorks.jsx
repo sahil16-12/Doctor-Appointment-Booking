@@ -32,7 +32,7 @@ const HowSehatWorks = () => {
             >
 
               <div className="relative z-10">
-                <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="bg-[#1e3a5f] w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <Users className="text-white" size={28} />
                 </div>
                 <h3 className="text-lg font-bold text-[#1e3a5f] mb-2 text-center">
@@ -54,7 +54,7 @@ const HowSehatWorks = () => {
             >
 
               <div className="relative z-10">
-                <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="bg-[#1e3a5f] w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <Stethoscope className="text-white" size={28} />
                 </div>
                 <h3 className="text-lg font-bold text-[#1e3a5f] mb-2 text-center">
@@ -76,7 +76,7 @@ const HowSehatWorks = () => {
             >
 
               <div className="relative z-10">
-                <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="bg-[#1e3a5f] w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <Calendar className="text-white" size={28} />
                 </div>
                 <h3 className="text-lg font-bold text-[#1e3a5f] mb-2 text-center">
@@ -98,7 +98,7 @@ const HowSehatWorks = () => {
             >
 
               <div className="relative z-10">
-                <div className="bg-blue-600 w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="bg-[#1e3a5f] w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <CheckCircle className="text-white" size={28} />
                 </div>
                 <h3 className="text-lg font-bold text-[#1e3a5f] mb-2 text-center">

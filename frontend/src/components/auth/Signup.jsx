@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   User,
   Stethoscope,
@@ -17,9 +17,12 @@ import {
 import FormInput from "../ui/FormInput";
 import FormSelect from "../ui/FormSelect";
 import ParticleBackground from "../ui/ParticleBackground";
+import toast from "react-hot-toast";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState("PATIENT");
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     UserType: "PATIENT",
     FullName: "",
@@ -49,8 +52,65 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: API call to backend
-    console.log("Form Data:", formData);
+
+    // Validate password confirmation
+    if (formData.Password !== formData.ConfirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Prepare request body (exclude ConfirmPassword, convert YearsExperience to number)
+      const requestBody = {
+        UserType: formData.UserType,
+        FullName: formData.FullName,
+        Email: formData.Email,
+        Phone: formData.Phone,
+        Dob: formData.Dob,
+        Password: formData.Password,
+        EmergencyContact: formData.EmergencyContact || null,
+        Allergies: formData.Allergies || null,
+        Specialization: formData.Specialization || null,
+        LicenseNumber: formData.LicenseNumber || null,
+        YearsExperience: formData.YearsExperience
+          ? parseInt(formData.YearsExperience)
+          : null,
+      };
+
+      const response = await fetch("https://localhost:7168/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Success - backend returns 201 with { message: "User registered successfully." }
+        toast.success(
+          data.message || data.Message || "Account created successfully!",
+        );
+
+        // Redirect to login page after success
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        // Error - backend returns { Message: "error message" }
+        toast.error(
+          data.Message || data.message || "Signup failed. Please try again.",
+        );
+      }
+    } catch (error) {
+      toast.error("Network error. Please check your connection.");
+      console.error("Signup error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,7 +125,7 @@ const Signup = () => {
         transition={{ duration: 0.5 }}
         className="relative z-10 mb-6"
       >
-        <img src="/sehat-logo.png" alt="Sehat" className="h-12 w-auto" />
+        <img src="/sehat-logo.png" alt="Sehat" className="h-16 w-auto" />
       </motion.div>
 
       {/* Title */}
@@ -75,10 +135,10 @@ const Signup = () => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="relative z-10 text-center mb-6"
       >
-        <h1 className="text-2xl font-bold text-white mb-1">
+        <h1 className="text-3xl font-bold text-white mb-2">
           Create your account
         </h1>
-        <p className="text-gray-400 text-sm">
+        <p className="text-gray-400 text-base">
           Get started with Sehat in seconds
         </p>
       </motion.div>
@@ -96,7 +156,7 @@ const Signup = () => {
             onClick={() => handleUserTypeToggle("PATIENT")}
             className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
               userType === "PATIENT"
-                ? "bg-blue-500/20 text-white border-2 border-blue-500 shadow-lg shadow-blue-500/20"
+                ? "bg-blue-100/20 text-white border-2 border-blue-100 shadow-lg shadow-blue-100/20"
                 : "text-gray-400 hover:text-white hover:bg-white/5"
             }`}
           >
@@ -108,7 +168,7 @@ const Signup = () => {
             onClick={() => handleUserTypeToggle("DOCTOR")}
             className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
               userType === "DOCTOR"
-                ? "bg-blue-500/20 text-white border-2 border-blue-500 shadow-lg shadow-blue-500/20"
+                ? "bg-blue-100/20 text-white border-2 border-blue-100 shadow-lg shadow-blue-100/20"
                 : "text-gray-400 hover:text-white hover:bg-white/5"
             }`}
           >
@@ -132,7 +192,7 @@ const Signup = () => {
             {/* Basic Information Section */}
             <div className="mb-4">
               <h3 className="text-base font-semibold text-white mb-2.5 flex items-center gap-1.5">
-                <User size={16} className="text-blue-400" />
+                <User size={16} className="text-blue-100" />
                 Basic Information
               </h3>
 
@@ -220,7 +280,7 @@ const Signup = () => {
                   className="mb-4 overflow-hidden"
                 >
                   <h3 className="text-base font-semibold text-white mb-2.5 flex items-center gap-1.5">
-                    <HeartPulse size={16} className="text-blue-400" />
+                    <HeartPulse size={16} className="text-blue-100" />
                     Medical Information
                     <span className="text-xs font-normal text-gray-500">
                       (Optional)
@@ -264,7 +324,7 @@ const Signup = () => {
                   className="mb-4 overflow-hidden"
                 >
                   <h3 className="text-base font-semibold text-white mb-2.5 flex items-center gap-1.5">
-                    <Stethoscope size={16} className="text-blue-400" />
+                    <Stethoscope size={16} className="text-blue-100" />
                     Professional Information
                   </h3>
 
@@ -329,11 +389,11 @@ const Signup = () => {
                 />
                 <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
                   I agree to the{" "}
-                  <a href="#" className="text-blue-400 hover:text-blue-300">
+                  <a href="#" className="text-blue-100 hover:text-white">
                     Terms
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-400 hover:text-blue-300">
+                  <a href="#" className="text-blue-100 hover:text-white">
                     Privacy Policy
                   </a>
                 </span>
@@ -342,13 +402,31 @@ const Signup = () => {
               <div className="flex flex-col sm:flex-row gap-2.5">
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all text-xs"
+                  disabled={isLoading}
+                  whileHover={{ scale: isLoading ? 1 : 1.01 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.99 }}
+                  className="flex-1 bg-blue-300 hover:bg-blue-400 disabled:bg-blue-300/50 disabled:cursor-not-allowed text-black font-semibold py-2.5 px-5 rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all text-xs"
                 >
-                  <UserPlus size={16} />
-                  Create Account
-                  <ArrowRight size={16} />
+                  {isLoading ? (
+                    <>
+                      <motion.div
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      />
+                      Creating Account...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus size={16} />
+                      Create Account
+                      <ArrowRight size={16} />
+                    </>
+                  )}
                 </motion.button>
 
                 <Link
@@ -366,9 +444,9 @@ const Signup = () => {
       {/* Back to Home Button - Outside Card at Bottom */}
       <Link
         to="/"
-        className="relative z-10 text-gray-400 hover:text-white text-xs font-medium transition-colors flex items-center gap-1.5"
+        className="relative z-10 text-gray-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2"
       >
-        <Home size={16} />
+        <Home size={18} />
         Back to home
       </Link>
     </div>

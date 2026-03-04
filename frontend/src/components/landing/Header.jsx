@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-[#10223f] text-white sticky top-0 z-50 border-b border-blue-500/30"
-    >
-      <nav className="container mx-auto px-6 py-3">
+    <header className="bg-[#000000] text-white sticky top-0 z-50 border-b border-white/6">
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-6 py-3"
+      >
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3">
             <img
@@ -37,8 +37,8 @@ const Header = () => {
             </Link>
           </div>
         </div>
-      </nav>
-    </motion.header>
+      </motion.nav>
+    </header>
   );
 };
 
