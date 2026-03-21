@@ -16,6 +16,12 @@ const DoctorSidebar = ({ activePage, setActivePage, doctorData, onLogout }) => {
       label: "My Patients",
       section: "patients",
     },
+    {
+      id: "prescriptions",
+      icon: "💊",
+      label: "Prescriptions",
+      section: "patients",
+    },
     { id: "schedule", icon: "🗓️", label: "Schedule", section: "practice" },
     {
       id: "earnings",

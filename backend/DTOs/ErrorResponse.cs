@@ -6,6 +6,10 @@ namespace backend.DTOs
     public class ErrorResponse
     {
         #region Public Properties
+        /// <summary>
+        /// Gets or sets error message text.
+        /// </summary>
+        public string Error { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets error message text.

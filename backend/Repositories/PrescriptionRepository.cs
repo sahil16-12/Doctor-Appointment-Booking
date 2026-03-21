@@ -1,6 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using backend.Data;
+using backend.Exceptions;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
 {
@@ -76,7 +77,14 @@ namespace backend.Repositories
         public async Task UpdatePrescriptionAsync(TBL08 prescription)
         {
             _context.Prescriptions.Update(prescription);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                throw new AppException(e.InnerException.ToString(), 400);
+            }
         }
 
         /// <inheritdoc/>

@@ -189,6 +189,39 @@ export const appointmentAPI = {
       method: "DELETE",
     });
   },
+
+  // Prescription endpoints
+  createPrescription: async (data) => {
+    return apiFetch("/prescriptions", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  getPrescriptions: async () => {
+    return apiFetch("/prescriptions", {
+      method: "GET",
+    });
+  },
+
+  getPrescriptionById: async (prescriptionId) => {
+    return apiFetch(`/prescriptions/${prescriptionId}`, {
+      method: "GET",
+    });
+  },
+
+  updatePrescription: async (prescriptionId, data) => {
+    return apiFetch(`/prescriptions/${prescriptionId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  },
+
+  deletePrescription: async (prescriptionId) => {
+    return apiFetch(`/prescriptions/${prescriptionId}`, {
+      method: "DELETE",
+    });
+  },
 };
 
 /**

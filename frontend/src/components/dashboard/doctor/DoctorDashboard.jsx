@@ -9,6 +9,8 @@ import AppointmentsPage from "./pages/AppointmentsPage";
 import PatientsPage from "./pages/PatientsPage";
 import SchedulePage from "./pages/SchedulePage";
 import EarningsPage from "./pages/EarningsPage";
+import PrescriptionsPage from "./pages/PrescriptionsPage";
+import CreatePrescriptionModal from "./components/CreatePrescriptionModal";
 
 import { doctorAPI, authAPI } from "../../../services/api";
 import { logout as logoutAction } from "../../../store/authSlice";
@@ -22,6 +24,9 @@ const DoctorDashboard = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isCreatePrescriptionModalOpen, setIsCreatePrescriptionModalOpen] =
+    useState(false);
+  const [prescriptionsRefreshKey, setPrescriptionsRefreshKey] = useState(0);
 
   // Fetch doctor profile on mount
   useEffect(() => {
@@ -90,6 +95,10 @@ const DoctorDashboard = () => {
       title: "Earnings",
       sub: "Track your income and transactions",
     },
+    prescriptions: {
+      title: "Prescriptions",
+      sub: "Manage prescriptions issued to patients",
+    },
   };
 
   const pageComponents = {
@@ -98,6 +107,7 @@ const DoctorDashboard = () => {
     patients: <PatientsPage />,
     schedule: <SchedulePage />,
     earnings: <EarningsPage />,
+    prescriptions: <PrescriptionsPage key={prescriptionsRefreshKey} />,
   };
 
   const meta = pageMeta[activePage];
@@ -146,13 +156,24 @@ const DoctorDashboard = () => {
               </h1>
               <p className="text-sm text-gray-600 mt-1">{meta.sub}</p>
             </div>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setIsProfileModalOpen(true)}
-            >
-              👤 Profile
-            </Button>
+            <div className="flex gap-3">
+              {activePage === "prescriptions" && (
+                <Button
+                  variant="default"
+                  size="md"
+                  onClick={() => setIsCreatePrescriptionModalOpen(true)}
+                >
+                  💊 Issue Prescription
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="md"
+                onClick={() => setIsProfileModalOpen(true)}
+              >
+                👤 Profile
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -166,6 +187,16 @@ const DoctorDashboard = () => {
         onClose={() => setIsProfileModalOpen(false)}
         profile={profile}
         onProfileUpdate={handleProfileUpdate}
+      />
+
+      {/* Create Prescription Modal */}
+      <CreatePrescriptionModal
+        isOpen={isCreatePrescriptionModalOpen}
+        onClose={() => setIsCreatePrescriptionModalOpen(false)}
+        onSuccess={() => {
+          setPrescriptionsRefreshKey((prev) => prev + 1);
+          setIsCreatePrescriptionModalOpen(false);
+        }}
       />
     </div>
   );

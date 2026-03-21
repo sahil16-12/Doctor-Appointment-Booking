@@ -57,25 +57,47 @@ namespace backend.Services
             int doctorUserId,
             CreatePrescriptionRequest request)
         {
-            // Validate doctor owns the appointment
-            TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(request.AppointmentId);
-            if (appointment == null || appointment.L04F03 != doctorUserId)
+            try
             {
-                throw new AppException(
-                    "Doctor does not have permission to issue prescription for this appointment.",
-                    StatusCodes.Status403Forbidden);
+                // Validate doctor owns the appointment
+                TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(request.AppointmentId);
+                if (appointment == null)
+                {
+                    throw new AppException(
+                        "Appointment not found.",
+                        StatusCodes.Status404NotFound);
+                }
+
+                if (appointment.L04F03 != doctorUserId)
+                {
+                    throw new AppException(
+                        "Doctor does not have permission to issue prescription for this appointment.",
+                        StatusCodes.Status403Forbidden);
+                }
+
+                // Map request to model
+                TBL08 prescription = _reflectionMapper.Map<CreatePrescriptionRequest, TBL08>(request);
+                prescription.L08F03 = doctorUserId;
+                prescription.L08F04 = appointment.L04F02;
+
+                // Create prescription
+                await _prescriptionRepository.CreatePrescriptionAsync(prescription);
+
+                // Map and return response
+                return await MapPrescriptionResponseAsync(prescription);
             }
-
-            // Map request to model
-            TBL08 prescription = _reflectionMapper.Map<CreatePrescriptionRequest, TBL08>(request);
-            prescription.L08F03 = doctorUserId;
-            prescription.L08F04 = appointment.L04F02;
-
-            // Create prescription
-            await _prescriptionRepository.CreatePrescriptionAsync(prescription);
-
-            // Map and return response
-            return await MapPrescriptionResponseAsync(prescription);
+            catch (AppException)
+            {
+                // Re-throw AppException to be handled by middleware
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Convert unexpected exceptions to AppException
+                throw new AppException(
+                    $"Failed to create prescription: {ex.Message}",
+                    StatusCodes.Status500InternalServerError);
+            }
         }
 
         /// <inheritdoc/>
@@ -167,30 +189,48 @@ namespace backend.Services
         /// <returns>The mapped prescription response.</returns>
         private async Task<PrescriptionResponse> MapPrescriptionResponseAsync(TBL08 prescription)
         {
-            PrescriptionResponse response = _reflectionMapper.Map<TBL08, PrescriptionResponse>(prescription);
-
-            // Enrich with appointment data
-            TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(prescription.L08F02);
-            if (appointment != null)
+            try
             {
-                response.AppointmentDate = appointment.L04F04;
-            }
+                PrescriptionResponse response = _reflectionMapper.Map<TBL08, PrescriptionResponse>(prescription);
 
-            // Enrich with doctor name
-            TBL01? doctor = await _appointmentRepository.FindUserByIdAsync(prescription.L08F03);
-            if (doctor != null)
+                // Enrich with appointment data
+                if (prescription.L08F02 > 0)
+                {
+                    TBL04? appointment = await _appointmentRepository.FindAppointmentByIdAsync(prescription.L08F02);
+                    if (appointment != null)
+                    {
+                        response.AppointmentDate = appointment.L04F04;
+                    }
+                }
+
+                // Enrich with doctor name
+                if (prescription.L08F03 > 0)
+                {
+                    TBL01? doctor = await _appointmentRepository.FindUserByIdAsync(prescription.L08F03);
+                    if (doctor != null)
+                    {
+                        response.DoctorName = doctor.L01F03;
+                    }
+                }
+
+                // Enrich with patient name
+                if (prescription.L08F04 > 0)
+                {
+                    TBL01? patient = await _appointmentRepository.FindUserByIdAsync(prescription.L08F04);
+                    if (patient != null)
+                    {
+                        response.PatientName = patient.L01F03;
+                    }
+                }
+
+                return response;
+            }
+            catch (Exception ex)
             {
-                response.DoctorName = doctor.L01F03;
+                throw new AppException(
+                    $"Failed to map prescription response: {ex.Message}",
+                    StatusCodes.Status500InternalServerError);
             }
-
-            // Enrich with patient name
-            TBL01? patient = await _appointmentRepository.FindUserByIdAsync(prescription.L08F04);
-            if (patient != null)
-            {
-                response.PatientName = patient.L01F03;
-            }
-
-            return response;
         }
 
         #endregion
