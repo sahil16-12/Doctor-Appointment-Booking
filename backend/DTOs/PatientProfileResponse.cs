@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using backend.Mapping;
 
 namespace backend.DTOs
@@ -80,6 +81,32 @@ namespace backend.DTOs
         /// </summary>
         [MapProperty("L02F10")]
         public string? ChronicConditions { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient latitude coordinate for location-based doctor search.
+        /// </summary>
+        [MapProperty("L02F11")]
+        public decimal? Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient longitude coordinate for location-based doctor search.
+        /// </summary>
+        [MapProperty("L02F12")]
+        public decimal? Longitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient city.
+        /// </summary>
+        [JsonPropertyName("city")]
+        [MapProperty("L02F13")]
+        public string? City { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient state/province.
+        /// </summary>
+        [JsonPropertyName("state")]
+        [MapProperty("L02F14")]
+        public string? State { get; set; }
 
         /// <summary>
         /// Gets or sets the number of appointments with the doctor (not mapped from model, populated by service).

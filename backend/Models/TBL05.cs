@@ -52,13 +52,13 @@ namespace backend.Models
         /// Represents clinic geographic latitude coordinate.
         /// </summary>
         [Column("latitude")]
-        public decimal L05F07 { get; set; } = 0;
+        public decimal? L05F07 { get; set; }
 
         /// <summary>
         /// Represents clinic geographic longitude coordinate.
         /// </summary>
         [Column("longitude")]
-        public decimal L05F08 { get; set; } = 0;
+        public decimal? L05F08 { get; set; }
 
         /// <summary>
         /// Represents clinic contact phone number.

@@ -140,6 +140,13 @@ namespace backend.Repositories
         /// <returns>A list of matching appointments.</returns>
         Task<List<TBL04>> GetPatientAppointmentsByStatusAsync(int patientUserId, AppointmentStatus status);
 
+        /// <summary>
+        /// Finds patient profile by user identifier.
+        /// </summary>
+        /// <param name="patientUserId">The patient user identifier.</param>
+        /// <returns>The patient entity when found; otherwise null.</returns>
+        Task<TBL02?> GetPatientByUserIdAsync(int patientUserId);
+
         #endregion
     }
 }

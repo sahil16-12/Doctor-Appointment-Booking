@@ -3,6 +3,7 @@ import { formatDate } from "../../../../utils/helpers.js";
 import { patientAPI } from "../../../../services/api.js";
 import Button from "../../ui/Button";
 import toast from "react-hot-toast";
+import LocationPicker from "./LocationPicker";
 
 const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdate }) => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -16,6 +17,10 @@ const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdate }) => {
           heightCm: profile.heightCm || "",
           weightKg: profile.weightKg || "",
           chronicConditions: profile.chronicConditions || "",
+          city: profile.city || "",
+          state: profile.state || "",
+          latitude: profile.latitude || "",
+          longitude: profile.longitude || "",
         }
       : {},
   );
@@ -40,6 +45,10 @@ const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdate }) => {
         heightCm: editData.heightCm ? parseInt(editData.heightCm) : null,
         weightKg: editData.weightKg ? parseInt(editData.weightKg) : null,
         chronicConditions: editData.chronicConditions || null,
+        city: editData.city || null,
+        state: editData.state || null,
+        latitude: editData.latitude ? parseFloat(editData.latitude) : null,
+        longitude: editData.longitude ? parseFloat(editData.longitude) : null,
       };
 
       const updatedProfile = await patientAPI.updateProfile(updatePayload);
@@ -65,6 +74,10 @@ const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdate }) => {
       heightCm: profile.heightCm || "",
       weightKg: profile.weightKg || "",
       chronicConditions: profile.chronicConditions || "",
+      city: profile.city || "",
+      state: profile.state || "",
+      latitude: profile.latitude || "",
+      longitude: profile.longitude || "",
     });
     setIsEditMode(false);
   };
@@ -179,6 +192,39 @@ const ProfileModal = ({ isOpen, onClose, profile, onProfileUpdate }) => {
               />
             </div>
           </div>
+
+          {/* Location Information */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Location Information
+            </h3>
+            {isEditMode ? (
+              <LocationPicker
+                city={editData.city || ""}
+                state={editData.state || ""}
+                latitude={editData.latitude || 22.5645}
+                longitude={editData.longitude || 72.9289}
+                onLocationChange={(location) => {
+                  setEditData((prev) => ({
+                    ...prev,
+                    city: location.city,
+                    state: location.state,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  }));
+                }}
+                isEditMode={true}
+              />
+            ) : (
+              <LocationPicker
+                city={profile.city || ""}
+                state={profile.state || ""}
+                latitude={profile.latitude}
+                longitude={profile.longitude}
+                isEditMode={false}
+              />
+            )}
+          </div>
         </div>
 
         {/* Footer */}
@@ -239,6 +285,7 @@ const EditableInfoItem = ({
   maxLength,
   min,
   max,
+  step,
   fullWidth = false,
   textarea = false,
 }) => {
@@ -266,6 +313,7 @@ const EditableInfoItem = ({
             maxLength={maxLength}
             min={min}
             max={max}
+            step={step}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         )

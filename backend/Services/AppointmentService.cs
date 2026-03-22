@@ -60,19 +60,49 @@ namespace backend.Services
 
         #endregion
 
+        #region Private Methods
+
+        /// <summary>
+        /// Calculates distance between two geographic coordinates using Haversine formula.
+        /// Returns distance in kilometers.
+        /// </summary>
+        private static double CalculateDistance(decimal lat1, decimal lon1, decimal lat2, decimal lon2)
+        {
+            const double earthRadiusKm = 6371; // Earth's radius in kilometers
+
+            var dLat = ((double)lat2 - (double)lat1) * Math.PI / 180.0;
+            var dLon = ((double)lon2 - (double)lon1) * Math.PI / 180.0;
+
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                    Math.Cos((double)lat1 * Math.PI / 180.0) * Math.Cos((double)lat2 * Math.PI / 180.0) *
+                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            return earthRadiusKm * c; // Distance in kilometers
+        }
+
+        #endregion
+
         #region Public Methods
 
         /// <inheritdoc/>
         public async Task<List<AvailableDoctorResponse>> GetAvailableDoctorsAsync(int patientUserId)
         {
-            TBL01? patient = await _appointmentRepository.FindUserByIdAsync(patientUserId);
-            if (patient == null || patient.L01F02 != UserType.PATIENT)
+            // Get patient user record to verify patient exists
+            TBL01? user = await _appointmentRepository.FindUserByIdAsync(patientUserId);
+            if (user == null || user.L01F02 != UserType.PATIENT)
             {
                 throw new AppException("Patient profile not found.", StatusCodes.Status400BadRequest);
             }
 
+            // Get patient profile to retrieve location for distance-based filtering
+            TBL02? patient = await _appointmentRepository.GetPatientByUserIdAsync(patientUserId);
+            
             List<TBL03> doctors = await _appointmentRepository.GetAllDoctorsAsync();
             List<AvailableDoctorResponse> doctorResponses = new List<AvailableDoctorResponse>();
+
+            const double radiusKm = 10.0; // 10km radius for doctor search
 
             foreach (TBL03 doctor in doctors)
             {
@@ -84,21 +114,73 @@ namespace backend.Services
                 AvailableDoctorResponse response = _reflectionMapper.Map<TBL01, AvailableDoctorResponse>(doctor.L03F07);
                 _reflectionMapper.MapToExisting<TBL03, AvailableDoctorResponse>(doctor, response);
                 
-                // Fetch and include clinics where doctor practices
+                // Fetch clinics where doctor practices
                 List<TBL06> doctorClinics = await _appointmentRepository.GetDoctorClinicsAsync(doctor.L03F02);
-                response.Clinics = doctorClinics
-                    .Select(dc => new DoctorClinicResponse
-                    {
-                        ClinicId = dc.L06F07.L05F01,
-                        Name = dc.L06F07.L05F02,
-                        City = dc.L06F07.L05F04,
-                        Address = dc.L06F07.L05F03,
-                        State = dc.L06F07.L05F05,
-                        ConsultationFee = dc.L06F04
-                    })
-                    .ToList();
+                
+                // Filter clinics based on patient location if available
+                List<DoctorClinicResponse> filteredClinics = new List<DoctorClinicResponse>();
 
-                doctorResponses.Add(response);
+                if (patient != null && patient.L02F11.HasValue && patient.L02F12.HasValue)
+                {
+                    // Patient location is available - filter clinics within 10km radius
+                    foreach (TBL06 dc in doctorClinics)
+                    {
+                        // Check if clinic has location coordinates
+                        if (dc.L06F07.L05F07.HasValue && dc.L06F07.L05F08.HasValue)
+                        {
+                            double distance = CalculateDistance(
+                                patient.L02F11.Value,
+                                patient.L02F12.Value,
+                                dc.L06F07.L05F07.Value,
+                                dc.L06F07.L05F08.Value
+                            );
+
+                            // Only include clinic if within 10km radius
+                            if (distance <= radiusKm)
+                            {
+                                filteredClinics.Add(new DoctorClinicResponse
+                                {
+                                    ClinicId = dc.L06F07.L05F01,
+                                    Name = dc.L06F07.L05F02,
+                                    City = dc.L06F07.L05F04,
+                                    Address = dc.L06F07.L05F03,
+                                    State = dc.L06F07.L05F05,
+                                    Pincode = dc.L06F07.L05F06,
+                                    Phone = dc.L06F07.L05F09,
+                                    Latitude = dc.L06F07.L05F07,
+                                    Longitude = dc.L06F07.L05F08,
+                                    ConsultationFee = dc.L06F04
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // No patient location available - include all clinics (backward compatibility)
+                    filteredClinics = doctorClinics
+                        .Select(dc => new DoctorClinicResponse
+                        {
+                            ClinicId = dc.L06F07.L05F01,
+                            Name = dc.L06F07.L05F02,
+                            City = dc.L06F07.L05F04,
+                            Address = dc.L06F07.L05F03,
+                            State = dc.L06F07.L05F05,
+                            Pincode = dc.L06F07.L05F06,
+                            Phone = dc.L06F07.L05F09,
+                            Latitude = dc.L06F07.L05F07,
+                            Longitude = dc.L06F07.L05F08,
+                            ConsultationFee = dc.L06F04
+                        })
+                        .ToList();
+                }
+
+                // Only add doctor if they have at least one clinic within range (or any clinic if no patient location)
+                if (filteredClinics.Count > 0)
+                {
+                    response.Clinics = filteredClinics;
+                    doctorResponses.Add(response);
+                }
             }
 
             return doctorResponses;

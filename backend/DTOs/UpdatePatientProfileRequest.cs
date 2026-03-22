@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using backend.Mapping;
 
 namespace backend.DTOs
@@ -51,6 +52,36 @@ namespace backend.DTOs
         [MaxLength(1000, ErrorMessage = "Chronic conditions cannot exceed 1000 characters.")]
         [MapProperty("L02F10")]
         public string? ChronicConditions { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient latitude coordinate for location-based doctor search.
+        /// </summary>
+        [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90.")]
+        [MapProperty("L02F11")]
+        public decimal? Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient longitude coordinate for location-based doctor search.
+        /// </summary>
+        [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180.")]
+        [MapProperty("L02F12")]
+        public decimal? Longitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient city.
+        /// </summary>
+        [JsonPropertyName("city")]
+        [MaxLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
+        [MapProperty("L02F13")]
+        public string? City { get; set; }
+
+        /// <summary>
+        /// Gets or sets patient state/province.
+        /// </summary>
+        [JsonPropertyName("state")]
+        [MaxLength(100, ErrorMessage = "State cannot exceed 100 characters.")]
+        [MapProperty("L02F14")]
+        public string? State { get; set; }
 
         #endregion
     }

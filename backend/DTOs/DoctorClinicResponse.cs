@@ -40,6 +40,30 @@ namespace backend.DTOs
         public string State { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets clinic postal code.
+        /// </summary>
+        [MapProperty("L05F06")]
+        public string? Pincode { get; set; }
+
+        /// <summary>
+        /// Gets or sets clinic phone number.
+        /// </summary>
+        [MapProperty("L05F09")]
+        public string? Phone { get; set; }
+
+        /// <summary>
+        /// Gets or sets clinic latitude coordinate.
+        /// </summary>
+        [MapProperty("L05F07")]
+        public decimal? Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or sets clinic longitude coordinate.
+        /// </summary>
+        [MapProperty("L05F08")]
+        public decimal? Longitude { get; set; }
+
+        /// <summary>
         /// Gets or sets doctor's consultation fee at this clinic.
         /// </summary>
         public decimal? ConsultationFee { get; set; }

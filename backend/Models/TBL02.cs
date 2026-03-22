@@ -73,6 +73,30 @@ namespace backend.Models
         [Column("chronic_conditions")]
         public string? L02F10 { get; set; }
 
+        /// <summary>
+        /// Represents patient latitude coordinate for location-based doctor search
+        /// </summary>
+        [Column("latitude")]
+        public decimal? L02F11 { get; set; }
+
+        /// <summary>
+        /// Represents patient longitude coordinate for location-based doctor search
+        /// </summary>
+        [Column("longitude")]
+        public decimal? L02F12 { get; set; }
+
+        /// <summary>
+        /// Represents patient city
+        /// </summary>
+        [Column("city")]
+        public string? L02F13 { get; set; }
+
+        /// <summary>
+        /// Represents patient state/province
+        /// </summary>
+        [Column("state")]
+        public string? L02F14 { get; set; }
+
         #endregion
     }
 }

@@ -225,6 +225,14 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
+        /// <inheritdoc/>
+        public async Task<TBL02?> GetPatientByUserIdAsync(int patientUserId)
+        {
+            return await _context.Patients
+                .AsNoTracking()
+                .FirstOrDefaultAsync(patient => patient.L02F02 == patientUserId);
+        }
+
         #endregion
     }
 }
