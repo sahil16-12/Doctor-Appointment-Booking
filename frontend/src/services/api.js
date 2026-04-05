@@ -344,6 +344,12 @@ export const paymentAPI = {
       body: JSON.stringify({ reason }),
     });
   },
+
+  getDoctorEarnings: async () => {
+    return apiFetch("/payments/earnings", {
+      method: "GET",
+    });
+  },
 };
 
 /**

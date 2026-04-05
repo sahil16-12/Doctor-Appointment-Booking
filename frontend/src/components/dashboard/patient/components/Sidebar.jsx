@@ -16,14 +16,7 @@ const Sidebar = ({ activePage, setActivePage, patientData, onLogout }) => {
       label: "Prescriptions",
       section: "care",
     },
-    { id: "documents", icon: "📁", label: "Documents", section: "care" },
-    {
-      id: "messages",
-      icon: "💬",
-      label: "Messages",
-      badgeClass: "teal",
-      section: "care",
-    },
+    { id: "documents", icon: "📁", label: "Documents", section: "care" }
   ];
 
   const sections = {

@@ -9,4 +9,5 @@ public interface IPaymentService
     Task<PaymentResponse> GetPaymentByAppointmentIdAsync(int appointmentId, int userId, string userRole);
     Task<List<PaymentResponse>> GetMyPaymentsAsync(int userId, string userRole);
     Task RefundPaymentAsync(int appointmentId, string reason);
+    Task<DoctorEarningsResponse> GetDoctorEarningsAsync(int doctorUserId);
 }

@@ -284,4 +284,108 @@ public class PaymentService : IPaymentService
             throw new InvalidOperationException($"Refund failed: {ex.Message}");
         }
     }
+
+    public async Task<DoctorEarningsResponse> GetDoctorEarningsAsync(int doctorUserId)
+    {
+        // Get all payments for this doctor with related data
+        var payments = await _paymentRepository.GetByDoctorIdAsync(doctorUserId);
+        
+        // Get all refunds
+        var paymentIds = payments.Select(p => p.L10F01).ToList();
+        var refunds = new List<TBL11>();
+        foreach (var paymentId in paymentIds)
+        {
+            var refund = await _refundRepository.GetByPaymentIdAsync(paymentId);
+            if (refund != null)
+            {
+                refunds.Add(refund);
+            }
+        }
+
+        // Calculate current month range (local time)
+        var now = DateTime.Now;
+        var startOfMonth = new DateTime(now.Year, now.Month, 1);
+        var startOfMonthUtc = startOfMonth.ToUniversalTime();
+
+        // Calculate total earnings (successful payments minus successful refunds)
+        var totalEarnings = 0m;
+        foreach (var payment in payments)
+        {
+            if (payment.L10F09 == "SUCCEEDED")
+            {
+                var amountInCurrency = payment.L10F05 / 100m;
+                totalEarnings += amountInCurrency;
+            }
+            else if (payment.L10F09 == "REFUNDED")
+            {
+                // Subtract refunded amount
+                var amountInCurrency = payment.L10F05 / 100m;
+                totalEarnings -= amountInCurrency;
+            }
+        }
+
+        // Calculate this month earnings
+        var thisMonthEarnings = 0m;
+        foreach (var payment in payments.Where(p => p.L10F12 >= startOfMonthUtc))
+        {
+            if (payment.L10F09 == "SUCCEEDED")
+            {
+                var amountInCurrency = payment.L10F05 / 100m;
+                thisMonthEarnings += amountInCurrency;
+            }
+            else if (payment.L10F09 == "REFUNDED")
+            {
+                var amountInCurrency = payment.L10F05 / 100m;
+                thisMonthEarnings -= amountInCurrency;
+            }
+        }
+
+        // Calculate pending payouts (payments in processing state)
+        var pendingPayouts = payments
+            .Where(p => p.L10F09 == "PENDING")
+            .Sum(p => p.L10F05 / 100m);
+
+        // Count completed appointments (payments with SUCCEEDED status)
+        var totalCompletedAppointments = payments.Count(p => p.L10F09 == "SUCCEEDED" || p.L10F09 == "REFUNDED");
+        var thisMonthCompletedAppointments = payments
+            .Where(p => p.L10F12 >= startOfMonthUtc)
+            .Count(p => p.L10F09 == "SUCCEEDED" || p.L10F09 == "REFUNDED");
+
+        // Build recent transactions list (last 10)
+        var recentTransactions = payments
+            .OrderByDescending(p => p.L10F12)
+            .Take(10)
+            .Select(p =>
+            {
+                var refund = refunds.FirstOrDefault(r => r.L11F02 == p.L10F01);
+                var patientName = p.Patient != null 
+                    ? p.Patient.L01F03
+                    : "Unknown Patient";
+
+                return new TransactionItem
+                {
+                    PaymentId = p.L10F01,
+                    AppointmentId = p.L10F02,
+                    PatientName = patientName,
+                    Amount = p.L10F05 / 100m,
+                    Currency = p.L10F06,
+                    Status = p.L10F09,
+                    PaymentDate = p.L10F12,
+                    IsRefunded = refund != null,
+                    RefundReason = refund?.L11F07,
+                    RefundDate = refund?.L11F09
+                };
+            })
+            .ToList();
+
+        return new DoctorEarningsResponse
+        {
+            TotalEarnings = totalEarnings,
+            ThisMonthEarnings = thisMonthEarnings,
+            PendingPayouts = pendingPayouts,
+            TotalCompletedAppointments = totalCompletedAppointments,
+            ThisMonthCompletedAppointments = thisMonthCompletedAppointments,
+            RecentTransactions = recentTransactions
+        };
+    }
 }

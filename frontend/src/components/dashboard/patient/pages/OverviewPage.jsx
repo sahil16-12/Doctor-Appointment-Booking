@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { appointmentAPI } from "../../../../services/api.js";
+import {
+  appointmentAPI,
+  medicalDocumentAPI,
+} from "../../../../services/api.js";
 import SummaryCards from "../components/SummaryCards";
 import AppointmentsList from "../components/AppointmentsList";
 import AppointmentDetailsModal from "../components/AppointmentDetailsModal";
@@ -10,6 +13,7 @@ const OverviewPage = ({ onBookAppointment }) => {
   const [appointments, setAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [completedAppointments, setCompletedAppointments] = useState([]);
+  const [documentsCount, setDocumentsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -108,6 +112,21 @@ const OverviewPage = ({ onBookAppointment }) => {
     fetchAppointments();
   }, []);
 
+  // Fetch documents count
+  useEffect(() => {
+    const fetchDocumentsCount = async () => {
+      try {
+        const documents = await medicalDocumentAPI.getMyDocuments();
+        setDocumentsCount(documents?.length || 0);
+      } catch (error) {
+        console.error("Failed to fetch documents count:", error);
+        setDocumentsCount(0);
+      }
+    };
+
+    fetchDocumentsCount();
+  }, []);
+
   const summaryData = [
     {
       icon: "📅",
@@ -130,9 +149,9 @@ const OverviewPage = ({ onBookAppointment }) => {
       color: "green",
     },
     {
-      icon: "💬",
-      value: "—",
-      label: "Messages",
+      icon: "📄",
+      value: documentsCount.toString(),
+      label: "Medical Documents",
       color: "indigo",
     },
   ];

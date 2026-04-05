@@ -74,6 +74,15 @@ public class PaymentsController : ControllerBase
         await _paymentService.RefundPaymentAsync(appointmentId, request.Reason);
         return Ok(new { message = "Refund processed successfully" });
     }
+
+    [HttpGet("earnings")]
+    [Authorize(Roles = "DOCTOR")]
+    public async Task<IActionResult> GetDoctorEarnings()
+    {
+        CurrentUserContext currentUser = HttpContext.GetCurrentUserContext();
+        var response = await _paymentService.GetDoctorEarningsAsync(currentUser.UserId);
+        return Ok(response);
+    }
 }
 
 public class RefundRequest
