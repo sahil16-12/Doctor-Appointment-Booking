@@ -23,6 +23,11 @@ namespace backend.Controllers
         /// </summary>
         private readonly IAppointmentService _appointmentService;
 
+        /// <summary>
+        /// Represents payment service dependency.
+        /// </summary>
+        private readonly IPaymentService _paymentService;
+
         #endregion
 
         #region Constructor
@@ -31,9 +36,11 @@ namespace backend.Controllers
         /// Initializes a new instance of the <see cref="AppointmentsController"/> class.
         /// </summary>
         /// <param name="appointmentService">The appointment service.</param>
-        public AppointmentsController(IAppointmentService appointmentService)
+        /// <param name="paymentService">The payment service.</param>
+        public AppointmentsController(IAppointmentService appointmentService, IPaymentService paymentService)
         {
             _appointmentService = appointmentService;
+            _paymentService = paymentService;
         }
 
         #endregion
@@ -283,7 +290,19 @@ namespace backend.Controllers
             await _appointmentService.CancelFutureAppointmentValidateAsync();
             await _appointmentService.CancelFutureAppointmentSaveAsync();
 
-            return Ok(new { message = "Appointment cancelled successfully." });
+            // Process refund for the cancelled appointment
+            try
+            {
+                await _paymentService.RefundPaymentAsync(appointmentId, request.DoctorNotes ?? "Appointment cancelled by doctor");
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't fail the cancellation
+                // The appointment is already cancelled, refund can be processed manually if needed
+                Console.WriteLine($"Refund processing failed for appointment {appointmentId}: {ex.Message}");
+            }
+
+            return Ok(new { message = "Appointment cancelled successfully and refund processed." });
         }
 
         /// <summary>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { appointmentAPI } from "../../../../services/api.js";
+import { loadStripe } from "@stripe/stripe-js";
+import { appointmentAPI, paymentAPI } from "../../../../services/api.js";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
+import PaymentModal from "../components/PaymentModal";
 import toast from "react-hot-toast";
 
 const SlotSelectionPage = ({ doctor, clinic, onBookingComplete, onBack }) => {
@@ -10,7 +12,24 @@ const SlotSelectionPage = ({ doctor, clinic, onBookingComplete, onBack }) => {
   const [reason, setReason] = useState("");
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [step, setStep] = useState(1); // 1: Select Slot, 2: Enter Reason
+  const [step, setStep] = useState(1); // 1: Select Slot, 2: Enter Reason, 3: Payment
+  const [stripePromise, setStripePromise] = useState(null);
+  const [paymentIntentData, setPaymentIntentData] = useState(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  // Initialize Stripe
+  useEffect(() => {
+    const initializeStripe = async () => {
+      try {
+        const config = await paymentAPI.getConfig();
+        const stripe = await loadStripe(config.publishableKey);
+        setStripePromise(stripe);
+      } catch (error) {
+        console.error("Failed to initialize Stripe:", error);
+      }
+    };
+    initializeStripe();
+  }, []);
 
   // Fetch slots when page loads
   useEffect(() => {
@@ -42,7 +61,7 @@ const SlotSelectionPage = ({ doctor, clinic, onBookingComplete, onBack }) => {
     setStep(2);
   };
 
-  const handleBookAppointment = async () => {
+  const handleProceedToPayment = async () => {
     if (!reason.trim() || reason.length < 5) {
       toast.error("Please provide a reason (at least 5 characters)");
       return;
@@ -57,19 +76,48 @@ const SlotSelectionPage = ({ doctor, clinic, onBookingComplete, onBack }) => {
         reason: reason.trim(),
       };
 
-      await appointmentAPI.createAppointment(payload);
+      const paymentData = await paymentAPI.createPaymentIntent(payload);
+      console.log("✅ Payment Intent Created:", paymentData);
+
+      setPaymentIntentData(paymentData);
+      setStep(3);
+      setIsPaymentModalOpen(true);
+    } catch (error) {
+      toast.error(error.message || "Failed to initialize payment");
+      console.error("Error creating payment intent:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentIntentId) => {
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        paymentIntentId: paymentIntentId,
+        doctorUserId: doctor.doctorUserId,
+        slotId: selectedSlot.slotId,
+        reason: reason.trim(),
+      };
+
+      await paymentAPI.confirmPayment(payload);
       toast.success("Appointment booked successfully!");
+      setIsPaymentModalOpen(false);
       onBookingComplete?.();
     } catch (error) {
-      toast.error(error.message || "Failed to book appointment");
-      console.error("Error booking appointment:", error);
+      toast.error(error.message || "Failed to confirm appointment");
+      console.error("Error confirming payment:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleBack = () => {
-    if (step === 2) {
+    if (step === 3) {
+      setStep(2);
+      setIsPaymentModalOpen(false);
+    } else if (step === 2) {
       setStep(1);
       setReason("");
     } else {
@@ -208,16 +256,32 @@ const SlotSelectionPage = ({ doctor, clinic, onBookingComplete, onBack }) => {
                 </Button>
                 <Button
                   variant="primary"
-                  onClick={handleBookAppointment}
+                  onClick={handleProceedToPayment}
                   disabled={isSubmitting || reason.length < 5}
                 >
-                  {isSubmitting ? "Booking..." : "Confirm Booking"}
+                  {isSubmitting
+                    ? "Preparing Payment..."
+                    : "Proceed to Payment →"}
                 </Button>
               </div>
             </div>
           )}
         </Card.Content>
       </Card>
+
+      {/* Payment Modal */}
+      {isPaymentModalOpen && paymentIntentData && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={handleBack}
+          clientSecret={paymentIntentData.clientSecret}
+          stripePromise={stripePromise}
+          onSuccess={handlePaymentSuccess}
+          amount={paymentIntentData.amountCents}
+          doctorName={paymentIntentData.doctorName}
+          currency={paymentIntentData.currency}
+        />
+      )}
     </div>
   );
 };

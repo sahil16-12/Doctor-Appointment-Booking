@@ -303,6 +303,50 @@ export const medicalDocumentAPI = {
 };
 
 /**
+ * Payment API calls
+ */
+export const paymentAPI = {
+  getConfig: async () => {
+    return apiFetch("/payments/config", {
+      method: "GET",
+    });
+  },
+
+  createPaymentIntent: async (data) => {
+    return apiFetch("/payments/create-intent", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  confirmPayment: async (data) => {
+    return apiFetch("/payments/confirm", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  getPaymentByAppointment: async (appointmentId) => {
+    return apiFetch(`/payments/appointment/${appointmentId}`, {
+      method: "GET",
+    });
+  },
+
+  getMyPayments: async () => {
+    return apiFetch("/payments/my-payments", {
+      method: "GET",
+    });
+  },
+
+  refundPayment: async (appointmentId, reason) => {
+    return apiFetch(`/payments/refund/${appointmentId}`, {
+      method: "POST",
+      body: JSON.stringify({ reason }),
+    });
+  },
+};
+
+/**
  * Doctor API calls
  */
 export const doctorAPI = {

@@ -83,7 +83,7 @@ namespace backend.Repositories
             }
             catch(Exception e)
             {
-                throw new AppException(e.InnerException.ToString(), 400);
+                throw new AppException(e.InnerException?.ToString() ?? e.Message, 400);
             }
         }
 

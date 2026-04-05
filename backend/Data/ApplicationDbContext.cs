@@ -68,6 +68,16 @@ namespace backend.Data
         /// </summary>
         public DbSet<TBL09> MedicalDocuments { get; set; }
 
+        /// <summary>
+        /// Gets or sets the payments table mapping.
+        /// </summary>
+        public DbSet<TBL10> Payments { get; set; }
+
+        /// <summary>
+        /// Gets or sets the refunds table mapping.
+        /// </summary>
+        public DbSet<TBL11> Refunds { get; set; }
+
         #endregion
 
         #region Protected Methods
@@ -184,6 +194,55 @@ namespace backend.Data
                 entity.HasOne<TBL01>()
                     .WithMany()
                     .HasForeignKey(e => e.L09F02)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<TBL10>(entity =>
+            {
+                entity.ToTable("payments");
+                entity.HasKey(e => e.L10F01);
+                entity.Property(e => e.L10F01).HasColumnName("payment_id").ValueGeneratedOnAdd();
+                entity.Property(e => e.L10F12).HasColumnType("datetime");
+                entity.Property(e => e.L10F13).HasColumnType("datetime");
+                
+                entity.HasIndex(e => e.L10F02);
+                entity.HasIndex(e => e.L10F07).IsUnique();
+
+                entity.HasOne(e => e.Appointment)
+                    .WithMany()
+                    .HasForeignKey(e => e.L10F02)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Patient)
+                    .WithMany()
+                    .HasForeignKey(e => e.L10F03)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Doctor)
+                    .WithMany()
+                    .HasForeignKey(e => e.L10F04)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<TBL11>(entity =>
+            {
+                entity.ToTable("refunds");
+                entity.HasKey(e => e.L11F01);
+                entity.Property(e => e.L11F01).HasColumnName("refund_id").ValueGeneratedOnAdd();
+                entity.Property(e => e.L11F09).HasColumnType("datetime");
+                entity.Property(e => e.L11F10).HasColumnType("datetime");
+                
+                entity.HasIndex(e => e.L11F02);
+                entity.HasIndex(e => e.L11F05).IsUnique();
+
+                entity.HasOne(e => e.Payment)
+                    .WithMany()
+                    .HasForeignKey(e => e.L11F02)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.Appointment)
+                    .WithMany()
+                    .HasForeignKey(e => e.L11F03)
                     .OnDelete(DeleteBehavior.Cascade);
             });
         }

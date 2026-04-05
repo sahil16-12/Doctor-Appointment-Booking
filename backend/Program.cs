@@ -169,6 +169,13 @@ builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 builder.Services.AddScoped<IMedicalDocumentRepository, MedicalDocumentRepository>();
 builder.Services.AddScoped<IMedicalDocumentService, MedicalDocumentService>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IRefundRepository, RefundRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+// Stripe Configuration
+builder.Services.Configure<backend.Models.StripeSettings>(
+    builder.Configuration.GetSection("Stripe"));
 
 #endregion
 
